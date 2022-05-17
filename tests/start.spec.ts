@@ -1,6 +1,5 @@
 import { bgBlueBright, blueBright, magentaBright } from 'ansi-colors';
 import { expect } from 'chai';
-import { sayHello } from '../src/index';
 import * as logger from './lib/logger';
 
 const LOGENTRY = logger.create(`START`);
@@ -17,13 +16,7 @@ describe(`Tests the project setup. You can delete this after project initializat
     });
 
     it(`Tests the index module.`, function (done) {
-        const expected = `${magentaBright.bold('Hello')}, ${bgBlueBright.bold('World')}!`
-
-        log(`Testing ${expected}`);
-        warn(`Testing ${expected}`);
-        error(`Testing ${expected}`);
-
-        expect(sayHello('World'), "Expected return value from sayHello() did not equal actual return value.").to.have.deep.equals(expected);
+        
 
         done();
     });
