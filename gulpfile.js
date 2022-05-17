@@ -1,7 +1,7 @@
 const del = require('del');
 // Makes spawning easier across platforms
 const spawn = require("cross-spawn").sync;      
-const { series, src, dest } = require('gulp');
+const { series, src, dest, watch } = require('gulp');
 const rename = require('gulp-rename');
 // Lot of info we can re-use from tsconfig.json
 const tscConfig = require('./tsconfig.json');  
@@ -148,3 +148,9 @@ const postInstallTask = (done) => {
 
 postInstallTask.description = "Fires after the project is installed (npm install)."
 exports.postInstall = postInstallTask;
+
+const watchTasks = series(buildTask, testTask)
+const watchTask = () => {
+    return watch(TASK_CONFIG.COMPILE.paths, watchTasks);
+}
+exports.watch = watchTask;

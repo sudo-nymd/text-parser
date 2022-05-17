@@ -1,6 +1,7 @@
 import { bgBlueBright, blueBright, magentaBright } from 'ansi-colors';
 import { expect } from 'chai';
 import * as logger from './lib/logger';
+import Parser from '../src/parser';
 
 const LOGENTRY = logger.create(`START`);
 const log = (msg: string | object) => logger.log(LOGENTRY, msg);
@@ -17,6 +18,9 @@ describe(`Tests the project setup. You can delete this after project initializat
 
     it(`Tests the index module.`, function (done) {
         
+        const parser = new Parser();
+        const line = parser.parse(`  The quick brown fox jumped over the lazy dog.`);
+        debug(line);
 
         done();
     });
