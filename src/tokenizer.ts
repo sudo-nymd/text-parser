@@ -1,13 +1,66 @@
+enum TokenFlags {
+    None = 0,
+    SingleQuote = 1 << 0,
+    DoubleQuote = 1 << 1,
+    Brace = 1 << 2,
+    Bracket = 1 << 3,
+    Date = 1 << 16
+}
+
+type TokenSpec = {
+    re: RegExp,
+    type: TokenTypes,
+    flags: TokenFlags
+}
+
+const TokenSpecs: TokenSpec[] = [
+    {
+        re: /^\s+/,
+        type: 'whitespace',
+        flags: TokenFlags.None
+    },
+    {
+        re: /((?<![\\])['"])((?:.(?!(?<![\\])\1))*.?)\1/,  // /"[^"]*"/,
+        type: 'phrase',
+        flags:TokenFlags.DoubleQuote
+    },
+    {
+        re: /^'[^']*'/,
+        type: 'phrase',
+        flags: TokenFlags.SingleQuote
+    },
+    {
+        re: /^{[^{]*}/,
+        type: 'phrase',
+        flags: TokenFlags.Bracket
+    },
+    {
+        re: /^\[[^\[]*\]/,
+        type: 'phrase',
+        flags: TokenFlags.Brace
+    }
+]
+
 class Tokenizer {
 
+    // 
     private _text: string;
+
+    //
     private _cursor: number;
+
+    isEOF(): boolean {
+        return this._cursor === this._text.length;
+    }
 
     /**
      * Initializes the tokenizer.
      */
     init(text: string) {
+        // Store for later use.
         this._text = text;
+
+        // Track the current position.
         this._cursor = 0;
     }
 
@@ -16,33 +69,23 @@ class Tokenizer {
     }
 
     public getNextToken(): Token {
-        if (! this.hasMoretokens()) {
+        if (!this.hasMoretokens()) {
             return null;
         }
 
         const current = this._text.slice(this._cursor);
 
-        if(current[0] != ' ') {
-            let word = '';
-            while( current[this._cursor] != ' ') {
-                word += current[this._cursor++];
-            }
-
-            return {
-                type: 'word',
-                value: word
-            }
-        }
-
-        if (current[0] == ' ') {
-            let whitespace = '';
-            while (current[this._cursor] === ' ') {
-                whitespace += current[this._cursor++];
-            }
-
-            return {
-                type: 'whitespace',
-                value: whitespace
+        for (const {re, type, flags} of TokenSpecs) {
+            const matched = re.exec(current);
+            if (matched !== null) {
+                
+                const match = matched[0];
+                this._cursor += match.length;
+                return {
+                    type: type,
+                    value: match,
+                    flags: flags
+                }
             }
         }
     }
@@ -54,8 +97,8 @@ export type TokenTypes = 'word' | 'phrase' | 'character' | 'whitespace' | 'unkno
 
 export type Token = {
     type: TokenTypes,
-    parsedValue?: string;
-    value?: string;
+    value: string;
+    flags?: TokenFlags;
 }
 
 export type UnknownToken = Token & {
@@ -68,12 +111,18 @@ export type WordToken = Token & {
 
 export type PhraseToken = Token & {
     type: 'phrase';
+    open: CharacterToken;
+    close: CharacterToken;
 }
 
 export type CharacterToken = Token & {
     type: 'character'
 }
 
-export type LineItemToken = UnknownToken | CharacterToken | WordToken | PhraseToken;
+export type WhitespaceToken = Token & {
+    type: 'whitespace';
+}
+
+export type LineItemToken = UnknownToken | CharacterToken | WordToken | PhraseToken | WhitespaceToken;
 
 export type LineItems = Array<LineItemToken>;

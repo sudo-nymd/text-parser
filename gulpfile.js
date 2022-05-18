@@ -151,6 +151,6 @@ exports.postInstall = postInstallTask;
 
 const watchTasks = series(buildTask, testTask)
 const watchTask = () => {
-    return watch(TASK_CONFIG.COMPILE.paths, watchTasks);
+    return watch(TASK_CONFIG.COMPILE.paths, buildTask);
 }
 exports.watch = watchTask;

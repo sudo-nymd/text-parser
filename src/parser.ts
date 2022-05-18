@@ -1,3 +1,4 @@
+import { workerData } from "worker_threads";
 import * as tok from "./tokenizer";
 import Tokenizer from "./tokenizer";
 class Parser {
@@ -5,18 +6,18 @@ class Parser {
     constructor() {
         this._tokenizer = new Tokenizer();
     }
-    
+
     private _lookahead: tok.Token;
     private _tokenizer: Tokenizer;
-    private _lineOfText: string;
+    private _initialText: string;
 
     /**
      * Parses a string into an AST>
-     * @param lineOfText The line of text to be parsed.
+     * @param initialText The line of text to be parsed.
      */
-    public parse(lineOfText: string) {
-        this._lineOfText = lineOfText;
-        this._tokenizer.init(this._lineOfText);
+    public parse(initialText: string) {
+        this._initialText = initialText;
+        this._tokenizer.init(this._initialText);
 
         // Prime the tokenizer to obtain the first
         // token which is our "lookahead". The "lookahead" 
@@ -28,14 +29,12 @@ class Parser {
 
     eat(tokenType: tok.TokenTypes): tok.Token {
         const token = this._lookahead;
-        if(token == null) {
-            throw new SyntaxError(`Unexepcted end ofinput, exepcted: ${tokenType}`)
+        if (token == null) {
+            throw new SyntaxError(`Unexepcted end of input, exepcted: ${tokenType}`)
         }
 
         if (token.type !== tokenType) {
-            if (token == null) {
-                throw new SyntaxError(`Unexpected token type: "${token.type}" - "${token.value}", exepcted: ${tokenType}`)
-            }
+            throw new SyntaxError(`Unexpected token type: "${token.type}" - "${token.value}", exepcted: ${tokenType}`)
         }
 
         this._lookahead = this._tokenizer.getNextToken();
@@ -46,7 +45,7 @@ class Parser {
     /** Main entry point.
      * Line
      *      : LineItems
-     */     
+     */
     line() {
         return this.lineItems();
     }
@@ -59,24 +58,54 @@ class Parser {
     }
 
     lineItems(): tok.LineItems {
-        const token = this.eat('word')
-        const items: tok.LineItems = []
-        items.push(token as tok.LineItemToken)
+        const items: tok.LineItems = [];
+
+        //do {
+
+            switch (this._lookahead.type) {
+                case 'phrase':
+                    items.push(this.phrase());
+                    break;
+
+                case 'word':
+                    items.push(this.word());
+                    break;
+
+                case 'whitespace':
+                    items.push(this.whitespace());
+                    break;
+
+            }
+
+            //this._lookahead = this._tokenizer.getNextToken();
+        //} while (this._tokenizer.hasMoretokens());
+
         return items;
+    }
+
+    phrase(): tok.PhraseToken {
+        const token = this.eat('phrase') as tok.PhraseToken;
+        return token;
     }
 
     unknown(): tok.UnknownToken {
         return {
-            type:'unknown',
-            value: this._lineOfText
+            type: 'unknown',
+            value: this._initialText
         }
     }
 
-}
+    whitespace(): tok.WhitespaceToken {
+        return this.eat('whitespace') as tok.WhitespaceToken;
+    }
 
-// const p = new Parser();
-// p.parse(`word a : "word" "word1 word2" {word1 word2 : a the}`);
-// p.parse(`a`)
-// console.log(p.line())
+    word(): tok.WordToken {
+        const token = this.eat('word') as tok.WordToken;
+        return {
+            type: 'word',
+            value: token.value
+        }
+    }
+}
 
 export default Parser;

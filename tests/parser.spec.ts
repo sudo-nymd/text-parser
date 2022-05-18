@@ -19,9 +19,13 @@ describe(`Tests the project setup. You can delete this after project initializat
     it(`Tests the index module.`, function (done) {
         
         const parser = new Parser();
-        const line = parser.parse(`  The quick brown fox jumped over the lazy dog.`);
-        debug(line);
-
-        done();
+        let line = parser.parse(`'quote'one two`); debug(line);
+        line = parser.parse(`"double quote"`); debug(line);
+        line = parser.parse(`"escape \\"quote"`); debug(line);
+        line = parser.parse(`{bracket}`); debug(line);
+        line = parser.parse(`[brace]`); debug(line);
+        line = parser.parse(`  `); debug(line);
+        //line = parser.parse(`cat`); debug(line);
+        done(); 
     });
 });
