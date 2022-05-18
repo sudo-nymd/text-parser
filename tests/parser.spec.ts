@@ -10,7 +10,7 @@ const error = (msg: string | object) => logger.error(LOGENTRY, msg);
 const warn = (msg: string | object) => logger.warn(LOGENTRY, msg);
 
 
-describe(`Tests the project setup. You can delete this after project initialization, or add "skip" to test.`, function () {
+describe(`Tests the Parser module.`, function () {
     afterEach(() => {
         // Flush logging buffer after every test!
         logger.flush(LOGENTRY);

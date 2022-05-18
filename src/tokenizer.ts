@@ -4,6 +4,7 @@ enum TokenFlags {
     DoubleQuote = 1 << 1,
     Brace = 1 << 2,
     Bracket = 1 << 3,
+    Parenthesis = 1 << 4,
     Date = 1 << 16
 }
 
@@ -38,6 +39,21 @@ const TokenSpecs: TokenSpec[] = [
         re: /^\[[^\[]*\]/,
         type: 'phrase',
         flags: TokenFlags.Brace
+    },
+    {
+        re: /^\([^\(]*\)/,
+        type: 'phrase',
+        flags: TokenFlags.Parenthesis
+    },
+    {
+        re: /^[\w]+/,
+        type: 'word',
+        flags: TokenFlags.None
+    },
+    {
+        re: /^[:;<>]{1}/,
+        type: 'character',
+        flags: TokenFlags.None
     }
 ]
 
@@ -86,7 +102,19 @@ class Tokenizer {
                     value: match,
                     flags: flags
                 }
+            } else {
+                console.log(`Match miss against '${current}' using pattern '${re}' of type '${type}.`)
             }
+        }
+
+        // If we get to this point, none of our RegEx's picked up a match.
+        // Send it back as 'unknown'.
+        const match = current;
+        this._cursor += match.length;
+        return {
+            type: 'unknown',
+            value: match,
+            flags: TokenFlags.None
         }
     }
 }

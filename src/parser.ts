@@ -60,7 +60,7 @@ class Parser {
     lineItems(): tok.LineItems {
         const items: tok.LineItems = [];
 
-        //do {
+        while(this._tokenizer.hasMoretokens()) {
 
             switch (this._lookahead.type) {
                 case 'phrase':
@@ -75,10 +75,20 @@ class Parser {
                     items.push(this.whitespace());
                     break;
 
+                case 'character':
+                    items.push(this.character());
+                    break;
+
+                case 'unknown':
+                    items.push(this.unknown());
+                    break
+
+                default:
+                    throw new SyntaxError(`Unknown lookahead type: ${this._lookahead.type}`);
             }
 
             //this._lookahead = this._tokenizer.getNextToken();
-        //} while (this._tokenizer.hasMoretokens());
+        } 
 
         return items;
     }
@@ -89,10 +99,7 @@ class Parser {
     }
 
     unknown(): tok.UnknownToken {
-        return {
-            type: 'unknown',
-            value: this._initialText
-        }
+        return this.eat('unknown') as tok.UnknownToken;
     }
 
     whitespace(): tok.WhitespaceToken {
@@ -100,11 +107,7 @@ class Parser {
     }
 
     word(): tok.WordToken {
-        const token = this.eat('word') as tok.WordToken;
-        return {
-            type: 'word',
-            value: token.value
-        }
+        return this.eat('word') as tok.WordToken;
     }
 }
 
