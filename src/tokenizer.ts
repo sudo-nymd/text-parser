@@ -1,10 +1,15 @@
-enum TokenFlags {
+import { config } from "./common/config";
+
+const DEBUGGING: boolean = (process.env.DEBUG !== undefined);
+
+export enum TokenFlags {
     None = 0,
     SingleQuote = 1 << 0,
     DoubleQuote = 1 << 1,
     Brace = 1 << 2,
     Bracket = 1 << 3,
     Parenthesis = 1 << 4,
+    Punctuation = 1 << 5,
     Date = 1 << 16
 }
 
@@ -21,7 +26,7 @@ const TokenSpecs: TokenSpec[] = [
         flags: TokenFlags.None
     },
     {
-        re: /((?<![\\])['"])((?:.(?!(?<![\\])\1))*.?)\1/,  // /"[^"]*"/,
+        re: /^"[^"]*"/, // /((?<![\\])['"])((?:.(?!(?<![\\])\1))*.?)\1/,  // /"[^"]*"/,
         type: 'phrase',
         flags:TokenFlags.DoubleQuote
     },
@@ -51,9 +56,24 @@ const TokenSpecs: TokenSpec[] = [
         flags: TokenFlags.None
     },
     {
-        re: /^[:;<>]{1}/,
+        re: /^[^\s\w"'(\[\]{}\.,!]/,
         type: 'character',
         flags: TokenFlags.None
+    },
+    {
+        re: /^\./,
+        type: 'period',
+        flags: TokenFlags.Punctuation
+    },
+    {
+        re: /^,/,
+        type: 'comma',
+        flags: TokenFlags.Punctuation
+    },
+    {
+        re: /^!/,
+        type: 'exclamation-point',
+        flags: TokenFlags.Punctuation
     }
 ]
 
@@ -102,8 +122,6 @@ class Tokenizer {
                     value: match,
                     flags: flags
                 }
-            } else {
-                console.log(`Match miss against '${current}' using pattern '${re}' of type '${type}.`)
             }
         }
 
@@ -121,7 +139,9 @@ class Tokenizer {
 
 export default Tokenizer;
 
-export type TokenTypes = 'word' | 'phrase' | 'character' | 'whitespace' | 'unknown';
+export type PunctuationTokenTypes = 'period' | 'comma' | 'exclamation-point'
+
+export type TokenTypes = 'word' | 'phrase' | 'character' | 'whitespace' | 'unknown' | PunctuationTokenTypes;
 
 export type Token = {
     type: TokenTypes,
@@ -149,6 +169,11 @@ export type CharacterToken = Token & {
 
 export type WhitespaceToken = Token & {
     type: 'whitespace';
+}
+
+export type PunctuationToken = Token & {
+    type: PunctuationTokenTypes;
+    value: '.' | ',' | '!'
 }
 
 export type LineItemToken = UnknownToken | CharacterToken | WordToken | PhraseToken | WhitespaceToken;

@@ -1,5 +1,6 @@
 
 import { redBright, yellowBright, greenBright, magentaBright, blueBright} from 'ansi-colors';
+import { config } from '../../src/common/config'
 
 type TestLogEntryType = "log" | "debug" | "warning" | "error";
 
@@ -87,8 +88,14 @@ export const flush = (log: TestLog) => {
                 break;
 
             case "debug":
-                console.debug(tab + blueBright(source));
-                console.debug((message));
+                if(config.DEBUGGING) {
+                    if( typeof message === 'object') {
+                        console.debug(tab + blueBright(source));
+                        console.debug((message));
+                    } else {
+                        console.debug(`${ tab }${ blueBright(source) }: ${ message }`);
+                    }
+                }
                 break;
 
             default:
@@ -106,7 +113,7 @@ export const flush = (log: TestLog) => {
  */
 const checkSource = (log: TestLog, src?: string) => {
     return (src !== null && src !== undefined && src.trim().length > 0) 
-        ? src.trim() 
+        ? log.source + "=>" + src.trim() 
         : log.source
 }
 
