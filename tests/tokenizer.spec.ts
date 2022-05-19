@@ -151,7 +151,7 @@ describe(`Tests the Tokenizer module.`, function () {
         logger.flush(LOGENTRY);
     });
 
-    it.only(`Tests each line for tokens.`, function (done) {
+    it(`Tests each line for tokens.`, function (done) {
         const tokenizer = new Tokenizer();
         LINE_TESTS.forEach( function (line) {
             const tokens: Token[] = []
