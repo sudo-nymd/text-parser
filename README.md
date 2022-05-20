@@ -1,22 +1,43 @@
-# ts-lib-template
+# @SUDO-NYMD/TEXT-PARSER
+
+A simple, yet flexible, library for making sense out of text.
 
 # Grammer
 
-```
+## Document
 
-Line
-    - A single line of text
-    : LineItems
+## Lines
 
-LineItems
-    -- Collection of Words, Phrases, Characters, or WhiteSpace
-    : (Word | Phrase | Character | WhiteSpace)+
 
-Phrase
-    - One or more Word or WhiteSpace, enclosed by {} | [] | "" | ''
-    : PhraseOpen
-    : PhraseList
-    : PhraseClose
+## Line
+
+A single line of text.
+
+    : Literals
+
+## Literals
+
+A collection of one or more ```Words```, ```Phrases```, ```Characters```, or ```WhiteSpace```.
+
+    : (Word | Phrase | Character | Whitespace | Plugin) +
+
+## Phrase
+
+A collection of Words, Characters, or Whitespace encoded by a single ```PhraseCharacter```.
+
+    : PhraseOpen (PhraseCharacter) 1
+    : (Word | Character | Whitespace) +
+    : PhraseClose (PhraseCharacter) 1
+
+## PhraseCharacter
+
+A special character that signifies a the start and end boundaries of a ```Phrase```.
+
+    : <Brackets> {}
+    : <Braces> []
+    : <SingleQuotes>: ''
+    : <DoubleQuotes>: ""
+    : <Parenthesis>: ()
 
 PhraseOpen
     - One or more repeating characters that signify the start of a phrase.
@@ -35,11 +56,24 @@ Word
     - Any single word.
     : [a-zA-Z0-9']+
 
-
 Whitespace
     : [^\S\r\n]+
 
 NewLine
     : [\r\n]+
 
-```
+# Using the Library
+
+```COMING SOON```
+
+## Parser
+
+```COMING SOON```
+
+## Tokenizer
+
+```COMING SOON```
+
+## Plugins
+
+```COMING SOON```
