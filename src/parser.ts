@@ -1,6 +1,16 @@
-import { workerData } from "worker_threads";
 import * as tok from "./tokenizer";
 import Tokenizer from "./tokenizer";
+
+export enum ParsedFlags {
+    None = 0,
+    SingleQuote = 1 << 0,
+    DoubleQuote = 1 << 1,
+    Brace = 1 << 2,
+    Bracket = 1 << 3,
+    Parenthesis = 1 << 4,
+    Punctuation = 1 << 5,
+    Date = 1 << 16
+}
 class Parser {
 
     constructor() {
@@ -24,7 +34,7 @@ class Parser {
         // is used for predictive parsing.
         this._lookahead = this._tokenizer.getNextToken();
 
-        return this.line();
+        return this.Line();
     }
 
     eat(tokenType: tok.TokenTypes): tok.Token {
@@ -46,69 +56,152 @@ class Parser {
      * Line
      *      : LineItems
      */
-    line() {
-        return this.lineItems();
+    Line() {
+        return this.Literals();
     }
 
-    character(): tok.CharacterToken {
-        return {
-            type: 'character',
-            value: "a"
-        }
-    }
+    /**
+     * Literals
+     *  : Literal *
+     * @returns Array of Literals
+     */
+    Literals(): Literals {
+        const items: Literals = [];
 
-    lineItems(): tok.LineItems {
-        const items: tok.LineItems = [];
+        items.push(this.Literal())
 
-        while(this._tokenizer.hasMoretokens()) {
-
-            switch (this._lookahead.type) {
-                case 'phrase':
-                    items.push(this.phrase());
-                    break;
-
-                case 'word':
-                    items.push(this.word());
-                    break;
-
-                case 'whitespace':
-                    items.push(this.whitespace());
-                    break;
-
-                case 'character':
-                    items.push(this.character());
-                    break;
-
-                case 'unknown':
-                    items.push(this.unknown());
-                    break
-
-                default:
-                    throw new SyntaxError(`Unknown lookahead type: ${this._lookahead.type}`);
-            }
-
-            //this._lookahead = this._tokenizer.getNextToken();
+        while(this._lookahead != null) {
+            items.push(this.Literal());
         } 
 
         return items;
     }
 
-    phrase(): tok.PhraseToken {
-        const token = this.eat('phrase') as tok.PhraseToken;
+    /**
+     * LineItem
+     *  : Phrase
+     *  : Word
+     *  : Character
+     *  : Whitespace
+     *  : Punctuation
+     *  : Unknown
+     * @returns 
+     */
+    Literal() {
+        switch (this._lookahead.type) {
+            case 'phrase':
+                return this.Phrase();
+                break;
+
+            case 'word':
+                return this.Word();
+                break;
+
+            case 'whitespace':
+                return this.Whitespace();
+                break;
+
+            case 'character':
+                return this.Character();
+                break;
+
+            case 'unknown':
+                return this.Unknown();
+                break;
+
+            case 'comma':
+            case 'period':
+            case 'exclamation-point':
+                return this.Punctuation();
+                break;
+
+            default:
+                throw new SyntaxError(`Unknown lookahead type: ${this._lookahead.type}`);
+        }
+    }
+
+    Phrase(): PhraseToken {
+        const token = this.eat('phrase') as PhraseToken;
+        const value = token.value;
+        
+        token.open = {
+            type: 'character',
+            value: value[0]
+        }
+        token.close = {
+            'type': 'character',
+            value: value[token.value.length - 1]
+        }
+        token.value = value.slice(1, -1);
+
+        // Determine the flags
+        switch (token.open.value) {
+            case `"`: { token.flags = ParsedFlags.DoubleQuote; }
+            case `'`: { token.flags = ParsedFlags.SingleQuote; }
+            case `{`: { token.flags = ParsedFlags.Bracket; }
+            case `[`: { token.flags = ParsedFlags.Brace; }
+            case `(`: { token.flags = ParsedFlags.Parenthesis; }
+        }
+
         return token;
     }
 
-    unknown(): tok.UnknownToken {
-        return this.eat('unknown') as tok.UnknownToken;
+    Punctuation(): CharacterToken {
+        const token = this.eat(this._lookahead.type) as CharacterToken;
+        token.flags = ParsedFlags.Punctuation;
+        return token;
     }
 
-    whitespace(): tok.WhitespaceToken {
-        return this.eat('whitespace') as tok.WhitespaceToken;
+    Unknown(): UnknownToken {
+        return this.eat('unknown') as UnknownToken;
     }
 
-    word(): tok.WordToken {
-        return this.eat('word') as tok.WordToken;
+    Whitespace(): WhitespaceToken {
+        return this.eat('whitespace') as WhitespaceToken;
+    }
+
+    Word(): WordToken {
+        return this.eat('word') as WordToken;
+    }
+
+    Character(): CharacterToken {
+        return this.eat('character') as CharacterToken;
     }
 }
 
 export default Parser;
+
+export type ParsedToken = tok.Token & {
+    flags?: ParsedFlags
+}
+
+export type UnknownToken = ParsedToken & {
+    type: 'unknown';
+}
+
+export type WordToken = ParsedToken & {
+    type: 'word';
+}
+
+export type PhraseToken = ParsedToken & {
+    type: 'phrase';
+    open: CharacterToken;
+    close: CharacterToken;
+}
+
+export type CharacterToken = ParsedToken & {
+    type: 'character'
+}
+
+export type WhitespaceToken = ParsedToken & {
+    type: 'whitespace';
+}
+
+export type PunctuationToken = ParsedToken & {
+    type: tok.PunctuationTokenTypes;
+    value: '.' | ',' | '!'
+}
+
+export type LineItemToken = UnknownToken | CharacterToken | WordToken | PhraseToken | WhitespaceToken;
+
+export type Literals = Array<LineItemToken>;

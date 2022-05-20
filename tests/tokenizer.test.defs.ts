@@ -1,10 +1,9 @@
-import { Token, TokenFlags, TokenTypes } from '../src/tokenizer';
+import { Token, TokenTypes } from '../src/tokenizer';
 
 export type TokenTest = {
     text: string;
     expected: {
-        type: TokenTypes,
-        flags: TokenFlags
+        type: TokenTypes
     }
 }
 
@@ -53,71 +52,61 @@ export const TOKEN_TESTS: TokenTest[] = [
     {
         text: `[brace]`,
         expected: {
-            type: 'phrase',
-            flags: TokenFlags.Brace
+            type: 'phrase'
         }
     },
     {
         text: `{bracket}`,
         expected: {
-            type: 'phrase',
-            flags: TokenFlags.Bracket
+            type: 'phrase'
         }
     },
     {
         text: `{bracket phrase}`,
         expected: {
-            type: 'phrase',
-            flags: TokenFlags.Bracket
+            type: 'phrase'
         }
     },
     {
         text: `[brace phrase]`,
         expected: {
-            type: 'phrase',
-            flags: TokenFlags.Brace
+            type: 'phrase'
         }
     },
     {
         text: `"double quote phrase"`,
         expected: {
-            type: 'phrase',
-            flags: TokenFlags.DoubleQuote,
+            type: 'phrase'
         }
     },
     {
         text: `'single quote phrase'`,
         expected: {
-            type: 'phrase',
-            flags: TokenFlags.SingleQuote,
+            type: 'phrase'
         }
     },
     {
         text: `word`,
         expected: {
-            type: 'word',
-            flags: TokenFlags.None,
+            type: 'word'
         }
     },
     {
         text: `.`,
         expected: {
-            type: 'period',
-            flags: TokenFlags.Punctuation,
+            type: 'period'
         }
     },
     {
         text: `,`,
         expected: {
-            type: 'comma',
-            flags: TokenFlags.Punctuation,
+            type: 'comma'
         }
     },
     {
         text: `!`,
         expected: {
-            type: 'exclamation-point',
-            flags: TokenFlags.Punctuation,
+            type: 'exclamation-point'
         }
     }
 ]
@@ -129,8 +118,7 @@ for (let i = 0; i < CHARACTERS.length; i++) {
     TOKEN_TESTS.push({
         text: CHARACTERS[i],
         expected: {
-            type: 'character',
-            flags: TokenFlags.None
+            type: 'character'
         }
     });
 }

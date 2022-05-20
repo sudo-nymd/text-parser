@@ -2,78 +2,62 @@ import { config } from "./common/config";
 
 const DEBUGGING: boolean = (process.env.DEBUG !== undefined);
 
-export enum TokenFlags {
-    None = 0,
-    SingleQuote = 1 << 0,
-    DoubleQuote = 1 << 1,
-    Brace = 1 << 2,
-    Bracket = 1 << 3,
-    Parenthesis = 1 << 4,
-    Punctuation = 1 << 5,
-    Date = 1 << 16
+export type TokenSpec = {
+    pattern: RegExp,
+    type: TokenTypes,
+    isPlugin?: boolean,
+    pluginName?: string;
 }
 
-type TokenSpec = {
-    re: RegExp,
-    type: TokenTypes,
-    flags: TokenFlags
+export type PluginTokenSpec = {
+    pattern: RegExp,
+    type: string;
 }
 
 const TokenSpecs: TokenSpec[] = [
     {
-        re: /^\s+/,
-        type: 'whitespace',
-        flags: TokenFlags.None
+        pattern: /^\s+/,
+        type: 'whitespace'
     },
     {
-        re: /^"[^"]*"/, // /((?<![\\])['"])((?:.(?!(?<![\\])\1))*.?)\1/,  // /"[^"]*"/,
+        pattern: /^"[^"]*"/, // /((?<![\\])['"])((?:.(?!(?<![\\])\1))*.?)\1/,  // /"[^"]*"/,
         type: 'phrase',
-        flags:TokenFlags.DoubleQuote
     },
     {
-        re: /^'[^']*'/,
-        type: 'phrase',
-        flags: TokenFlags.SingleQuote
+        pattern: /^'[^']*'/,
+        type: 'phrase'
     },
     {
-        re: /^{[^{]*}/,
-        type: 'phrase',
-        flags: TokenFlags.Bracket
+        pattern: /^{[^{]*}/,
+        type: 'phrase'
     },
     {
-        re: /^\[[^\[]*\]/,
-        type: 'phrase',
-        flags: TokenFlags.Brace
+        pattern: /^\[[^\[]*\]/,
+        type: 'phrase'
     },
     {
-        re: /^\([^\(]*\)/,
-        type: 'phrase',
-        flags: TokenFlags.Parenthesis
+        pattern: /^\([^\(]*\)/,
+        type: 'phrase'
     },
     {
-        re: /^[\w]+/,
-        type: 'word',
-        flags: TokenFlags.None
+        pattern: /^[\w]+/,
+        type: 'word'
     },
     {
-        re: /^[^\s\w"'(\[\]{}\.,!]/,
-        type: 'character',
-        flags: TokenFlags.None
+        pattern: /^[^\s\w"'(\[\]{}\.,!]/,
+        type: 'character'
     },
     {
-        re: /^\./,
-        type: 'period',
-        flags: TokenFlags.Punctuation
+        pattern: /^\./,
+        type: 'period'
     },
     {
-        re: /^,/,
-        type: 'comma',
-        flags: TokenFlags.Punctuation
+        pattern: /^,/,
+        type: 'comma'
     },
     {
-        re: /^!/,
-        type: 'exclamation-point',
-        flags: TokenFlags.Punctuation
+        pattern: /^!/,
+        type: 'exclamation-point'
     }
 ]
 
@@ -85,6 +69,8 @@ class Tokenizer {
     //
     private _cursor: number;
 
+    private _plugins: TokenSpec[];
+
     isEOF(): boolean {
         return this._cursor === this._text.length;
     }
@@ -92,16 +78,58 @@ class Tokenizer {
     /**
      * Initializes the tokenizer.
      */
-    init(text: string) {
+    init(text: string, plugins?: PluginTokenSpec[]) {
         // Store for later use.
         this._text = text;
 
+        this._plugins = []
+
         // Track the current position.
         this._cursor = 0;
+
+        // Load plugins
+        if (plugins != null) {
+            if (Array.isArray(plugins)) {
+                plugins.forEach((plugin => {
+                    if (plugin.pattern && plugin.type) {
+                        this._plugins.push({
+                            pattern: plugin.pattern,
+                            type: 'plugin',
+                            isPlugin: true,
+                            pluginName: plugin.type
+                        })
+                    }
+                }));
+            }
+        }
     }
 
     public hasMoretokens(): boolean {
         return this._cursor < this._text.length;
+    }
+
+    private _match(spec: TokenSpec, text: string) {
+        const { pattern, type } = spec;
+        const matched = pattern.exec(text);
+        if (matched !== null) {
+
+            const match = matched[0];
+            this._cursor += match.length;
+
+            if (spec.isPlugin) {
+                return {
+                    type: 'plugin',
+                    isPlugin: true,
+                    value: match,
+                    pluginName: spec.pluginName
+                }
+            } else {
+                return {
+                    type: type,
+                    value: match
+                }
+            }
+        }
     }
 
     public getNextToken(): Token {
@@ -111,18 +139,15 @@ class Tokenizer {
 
         const current = this._text.slice(this._cursor);
 
-        for (const {re, type, flags} of TokenSpecs) {
-            const matched = re.exec(current);
-            if (matched !== null) {
-                
-                const match = matched[0];
-                this._cursor += match.length;
-                return {
-                    type: type,
-                    value: match,
-                    flags: flags
-                }
-            }
+        // Process plugins
+        for (const plugin of this._plugins) {
+            const token = this._match(plugin, current);
+            if (token != null) return token as Token;
+        }
+
+        for (const spec of TokenSpecs) {
+            const token = this._match(spec, current);
+            if (token != null) return token as Token;
         }
 
         // If we get to this point, none of our RegEx's picked up a match.
@@ -131,51 +156,26 @@ class Tokenizer {
         this._cursor += match.length;
         return {
             type: 'unknown',
-            value: match,
-            flags: TokenFlags.None
+            value: match
         }
     }
 }
 
 export default Tokenizer;
 
-export type PunctuationTokenTypes = 'period' | 'comma' | 'exclamation-point'
+export type PunctuationTokenTypes = 'period' | 'comma' | 'exclamation-point' | 'hyphen';
 
-export type TokenTypes = 'word' | 'phrase' | 'character' | 'whitespace' | 'unknown' | PunctuationTokenTypes;
+export type ExtendedTokenTypes = 'plugin';
+
+export type TokenTypes = 'word' | 'phrase' | 'character' | 'whitespace' | 'unknown' | PunctuationTokenTypes | ExtendedTokenTypes
 
 export type Token = {
     type: TokenTypes,
     value: string;
-    flags?: TokenFlags;
+    isPlugin?: false;
 }
 
-export type UnknownToken = Token & {
-    type: 'unknown';
+export type PluginToken = Token & {
+    isPlugin: true;
+    pluginName: string;
 }
-
-export type WordToken = Token & {
-    type: 'word';
-}
-
-export type PhraseToken = Token & {
-    type: 'phrase';
-    open: CharacterToken;
-    close: CharacterToken;
-}
-
-export type CharacterToken = Token & {
-    type: 'character'
-}
-
-export type WhitespaceToken = Token & {
-    type: 'whitespace';
-}
-
-export type PunctuationToken = Token & {
-    type: PunctuationTokenTypes;
-    value: '.' | ',' | '!'
-}
-
-export type LineItemToken = UnknownToken | CharacterToken | WordToken | PhraseToken | WhitespaceToken;
-
-export type LineItems = Array<LineItemToken>;

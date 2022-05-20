@@ -1,7 +1,8 @@
 import { expect } from 'chai';
 import * as logger from './lib/logger';
-import Tokenizer, { Token, TokenFlags } from '../src/tokenizer';
+import Tokenizer, { Token } from '../src/tokenizer';
 import { countOfTokensByType, LINE_TESTS, TOKEN_TESTS } from './tokenizer.test.defs';
+import { Keywords } from '../src/plugins/keywords';
 
 // "Stateless" logging functions (avoid clashes with Mocha's hijackng of "this")
 const LOGENTRY = logger.create(`START`);
@@ -15,6 +16,38 @@ describe(`Tests the Tokenizer module.`, function () {
         // Flush logging buffer after every test!
         logger.flush(LOGENTRY);
     });
+
+    it(`Tests the Keywords Plugin`, function (done) {
+        const keywords = new Keywords()
+            .add('zephyr')
+            .add('chinook')
+            .add('sirocco')
+            
+
+        const text = `
+        The chinook flew through the sirocco like a 
+        zephyr "blowing through the" [canyons]!
+        `
+        const tokenizer = new Tokenizer();
+        tokenizer.init(text.trim(), [keywords.apply()]);
+
+        const pluginTokens = []
+
+        while(tokenizer.hasMoretokens()){
+            const token = tokenizer.getNextToken();
+            if(token.isPlugin) {
+                pluginTokens.push(token);
+            }
+            debug(token);
+        }
+
+        // We should have the same amount of keyword tokens
+        // as the number of keywords we added.
+        const pluginCount = countOfTokensByType('plugin', pluginTokens);
+        expect(pluginCount, 'pluginCount').to.equal(keywords.count);
+
+        done();
+    })
 
     it(`Tests each line for tokens.`, function (done) {
         const tokenizer = new Tokenizer();
@@ -66,13 +99,11 @@ describe(`Tests the Tokenizer module.`, function () {
                 const { text, expected } = TOKEN_TESTS[testCount];
                 expect(token.value, `Token value at position ${tokenCount} does not match`).to.equal(text)
                 expect(token.type, `Token type at position ${tokenCount} does not match`).to.equal(expected.type);
-                expect(token.flags, `Token flags at position ${tokenCount} does not match`).to.equal(expected.flags);
                 testCount++;
             } else {
                 // Every other token should be whitespace
                 expect(token.value, `Token value at position ${tokenCount} does not match`).to.equal(' ')
                 expect(token.type, `Token type at position ${tokenCount} does not match`).to.equal('whitespace');
-                expect(token.flags, `Token flags at position ${tokenCount} does not match`).to.equal(TokenFlags.None);
             }
             tokenCount++;
         }
@@ -99,7 +130,6 @@ describe(`Tests the Tokenizer module.`, function () {
                 debug(token, text);
                 expect(token.value, `token.value`).to.equal(text);
                 expect(token.type, `token.type`).to.equal(expected.type);
-                expect(token.flags, `token.flags`).to.equal(expected.flags);
             }
         });
 

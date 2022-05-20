@@ -9,23 +9,26 @@ const debug = (msg: object) => logger.debug(LOGENTRY, msg);
 const error = (msg: string | object) => logger.error(LOGENTRY, msg);
 const warn = (msg: string | object) => logger.warn(LOGENTRY, msg);
 
-
 describe(`Tests the Parser module.`, function () {
     afterEach(() => {
         // Flush logging buffer after every test!
         logger.flush(LOGENTRY);
     });
 
-    it(`Tests the index module.`, function (done) {
+    it(`Tests the Parser module.`, function (done) {
+
+        const text = `
+        
+        The {quick}, brown fox "jumped over" the 'lazy dog', and the cow 
+        [jumped] over the moon!
+        
+        `
         
         const parser = new Parser();
-        let line = parser.parse(`'quote'one two`); debug(line);
-        line = parser.parse(`"double quote"`); debug(line);
-        line = parser.parse(`"escape \\"quote"`); debug(line);
-        line = parser.parse(`{bracket}`); debug(line);
-        line = parser.parse(`[brace]`); debug(line);
-        line = parser.parse(`  `); debug(line);
+        let line = parser.parse(text); debug(line);
+        
         //line = parser.parse(`cat`); debug(line);
         done(); 
     });
 });
+
