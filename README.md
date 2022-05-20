@@ -25,41 +25,61 @@ A collection of one or more ```Words```, ```Phrases```, ```Characters```, or ```
 
 A collection of Words, Characters, or Whitespace encoded by a single ```PhraseCharacter```.
 
+**Examples:**
+
+* "The snow is falling"
+* [Build Completed]
+* {Start}
+* 'Mission Success'
+
+    
+---
+```Phrase```
+
     : PhraseOpen (PhraseCharacter) 1
     : (Word | Character | Whitespace) +
     : PhraseClose (PhraseCharacter) 1
 
-## PhraseCharacter
+### PhraseCharacter
 
-A special character that signifies a the start and end boundaries of a ```Phrase```.
+A special character that signifies the start and end boundaries of a ```Phrase```.
 
-    : <Brackets> {}
-    : <Braces> []
-    : <SingleQuotes>: ''
-    : <DoubleQuotes>: ""
-    : <Parenthesis>: ()
+    : Brackets {} /^{[^{]*}/
+    : Braces [] /^\[[^\[]*\]/
+    : SingleQuotes '' /^'[^']*'/
+    : DoubleQuotes "" /^"[^"]*"/
+    : Parenthesis *()*: /^\([^\(]*\)/
 
-PhraseOpen
-    - One or more repeating characters that signify the start of a phrase.
+### PhraseOpen
+    
+One or more repeating characters that signify the start of a phrase.
+
     : ({ | [ | " | ')+
 
-PhraseList
-    - One or more Words or WhiteSpace
-    : (Word | WhiteSpace)+
+### PhraseList
 
-PhraseClose
-    - One or more repeating characters that signify the end of a phrase.
+One or more Words or WhiteSpace
+    
+    : (Word | WhiteSpace | Character)+
+
+### PhraseClose
+
+One or more repeating characters that signify the end of a phrase.
+
     - Should Match the character(s) in PhraseOpen.
     : (} | ] | " | ')+
 
-Word
-    - Any single word.
+## Word
+
+Any single word.
+
     : [a-zA-Z0-9']+
 
-Whitespace
+## Whitespace
+
     : [^\S\r\n]+
 
-NewLine
+## NewLine
     : [\r\n]+
 
 # Using the Library
