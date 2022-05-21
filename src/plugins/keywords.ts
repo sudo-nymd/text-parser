@@ -71,7 +71,7 @@ class Keywords {
     /**
      * We need to build a RegExp for Tokenizer to use consisting of
      *  '^' The "start of line" character PLUS
-     *  each keyword seperated by the logical OR '|'
+     *  each keyword seperated by the logical OR '|'.
      * @returns ^keyword1|^keyword2|^keyword3
      */
     private _formatKeywords() {

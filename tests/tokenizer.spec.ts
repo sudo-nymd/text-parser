@@ -29,7 +29,7 @@ describe(`Tests the Tokenizer module.`, function () {
         zephyr "blowing through the" [canyons]!
         `
         const tokenizer = new Tokenizer();
-        tokenizer.init(text.trim(), [keywords.apply()]);
+        tokenizer.init(text.trim(), [keywords.plugin()]);
 
         const pluginTokens = []
 
