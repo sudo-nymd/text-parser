@@ -39,9 +39,6 @@ const TASK_CONFIG = {
         command: './node_modules/.bin/mocha',
         args: ['--config', './tests/.mocharc.json']
     },
-    BUNDLE: {
-        command: 'webpack-cli'
-    },
     COVERAGE: {
         command: './node_modules/.bin/nyc',
         args: ['gulp', 'test']
@@ -54,20 +51,6 @@ const TASK_CONFIG = {
         stdio: 'inherit'
     }
 }
-
-/**
- * TASK BUNDLE
- * Bundles the project output.
- * @param {*} done A callback that let's Gulp know we are finished.
- */
-const bundleTask = (done) => {
-    const { SPAWN: OPTIONS, BUNDLE: { command } } = TASK_CONFIG
-    const result = spawn(command, OPTIONS);
-    done();
-}
-
-bundleTask.description = `Bundles (using ${f_cmd(TASK_CONFIG.BUNDLE.command)}) the build output at ${f_args(TASK_CONFIG.COMPILE.paths)} and drops the bundle at ${f_args("./lib")}.`
-exports.bundle = bundleTask;
 
 /**
  * TASK CLEAN
@@ -128,7 +111,7 @@ exports.test = testTask;
  * TASK BUILD
  * Builds the project.
  */
-const buildTask = series([cleanTask, compileTask, bundleTask]);
+const buildTask = series([cleanTask, compileTask]);
 
 buildTask.description = `Cleans and compiles the project.`
 exports.build = buildTask;
