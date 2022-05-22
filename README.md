@@ -2,6 +2,37 @@
 
 A simple, yet flexible, library for making sense out of text.
 
+# Getting Started
+
+## Install the Package
+```
+npm i @sudo-nymd/text-parser
+```
+
+## Using the Library
+
+```COMING SOON```
+
+## Parser
+
+```COMING SOON```
+
+## Tokenizer
+
+```COMING SOON```
+
+## Plugins
+
+### Keywords Plugin
+
+```COMING SOON```
+
+### Date Plugins
+
+```COMING SOON```
+
+---
+
 # Grammer
 
 ## Document
@@ -32,7 +63,6 @@ A collection of Words, Characters, or Whitespace encoded by a single ```PhraseCh
 * {Start}
 * 'Mission Success'
 
-    
 ---
 ```Phrase```
 
@@ -81,25 +111,3 @@ Any single word.
 
 ## NewLine
     : [\r\n]+
-
-# Using the Library
-
-```COMING SOON```
-
-## Parser
-
-```COMING SOON```
-
-## Tokenizer
-
-```COMING SOON```
-
-## Plugins
-
-### Keywords Plugin
-
-```COMING SOON```
-
-### Date Plugins
-
-```COMING SOON```
