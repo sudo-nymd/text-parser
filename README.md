@@ -1,6 +1,6 @@
-# @SUDO-NYMD/TEXT-PARSER
+# TEXT-PARSER
 
-A simple, yet flexible, library for making sense out of text.
+A simple, yet flexible library for extracting specialized tokens out of text.
 
 # Getting Started
 
