@@ -58,6 +58,10 @@ const TokenSpecs: TokenSpec[] = [
     {
         pattern: /^!/,
         type: 'exclamation-point'
+    },
+    {
+        pattern: /^'/,
+        type: 'apostrophe'
     }
 ]
 
@@ -163,7 +167,7 @@ class Tokenizer {
 
 export default Tokenizer;
 
-export type PunctuationTokenTypes = 'period' | 'comma' | 'exclamation-point' | 'hyphen';
+export type PunctuationTokenTypes = 'apostrophe' | 'period' | 'comma' | 'exclamation-point' | 'hyphen';
 
 export type ExtendedTokenTypes = 'plugin';
 

@@ -1,8 +1,9 @@
 import { expect } from 'chai';
+import { datesPluginTestRunner } from './plugin-dates-test-def';
 import * as logger from './lib/logger';
 import Tokenizer, { Token } from '../src/tokenizer';
-import { countOfTokensByType, LINE_TESTS, TOKEN_TESTS } from './tokenizer.test.defs';
-import { Keywords } from '../src/plugins/keywords';
+import { countOfTokensByType, countOfTokensByPluginName, LINE_TESTS, TOKEN_TESTS } from './tokenizer.test.defs';
+import { Keywords, dates } from '../src/plugins';
 
 // "Stateless" logging functions (avoid clashes with Mocha's hijackng of "this")
 const LOGENTRY = logger.create(`START`);
@@ -17,12 +18,81 @@ describe(`Tests the Tokenizer module.`, function () {
         logger.flush(LOGENTRY);
     });
 
+    it.only(`Tests the Dates Plugin`, function (done) {
+
+        const tokenizer = new Tokenizer();
+        
+        datesPluginTestRunner.tests.forEach(function(test) {
+            const { name, text, expected } = test;
+            const tokens = [];
+            debug({ msg: `Starting test name "${test.name}".`, text: text});
+            tokenizer.init(text, datesPluginTestRunner.plugins);
+            while (tokenizer.hasMoretokens()) {
+                const token = tokenizer.getNextToken();
+                tokens.push(token);
+                debug(token);
+            }
+
+            const actual = datesPluginTestRunner.getStatistics(tokens);
+            expect(actual, `${name}`).to.have.deep.equals(expected);
+        })
+
+        done();
+    })
+
+    it(`Tests the Dates Plugin`, function (done) {
+
+        const text = `
+        On Dec 14, 1911, the South Pole first reached by Roald Amundsen.
+        On 1/3/1959, Alaska becomes 49th U.S. state.
+        On 01/04/1642, Sir Isaac Newton is born.
+        The clock stopped on 11/11/1911 and 2/2/2022
+        July 4, 1980 was a good day. This is a test.
+        On Monday, I have a dentist appointment. Thursday is the day before fri
+        tue tuesday ISO Date 2000/01/09
+        `
+
+        const tokenizer = new Tokenizer();
+        tokenizer.init(text, dates);
+
+        // Keep track of tokens of type 'plugin'
+        const pluginTokens = [];
+
+        while(tokenizer.hasMoretokens()) {
+            const token = tokenizer.getNextToken();
+            //@ts-ignore
+            if(token.pluginName && token.isPlugin == true) {
+                pluginTokens.push(token);
+            }
+            
+            debug(token);
+        }
+
+        // We should have the same amount of date tokens
+        // as dates in our text (hardcoded count)
+        const pluginCount = countOfTokensByType('plugin', pluginTokens);
+        expect(pluginCount, 'pluginCount').to.equal(12);
+
+        const shortDateCount = countOfTokensByPluginName('short-date', pluginTokens);
+        expect(shortDateCount, 'short-date').to.equal(4);
+
+        const longDateCount = countOfTokensByPluginName('long-date', pluginTokens);
+        expect(longDateCount, 'long-date').to.equal(2);
+
+        const isoDateCount = countOfTokensByPluginName('iso-date', pluginTokens);
+        expect(isoDateCount, 'long-date').to.equal(1);
+
+        const dayOfWeekCount = countOfTokensByPluginName('day-of-week', pluginTokens);
+        expect(dayOfWeekCount, 'day-of-week').to.equal(5);
+
+        done();
+    });
+
     it(`Tests the Keywords Plugin`, function (done) {
         const keywords = new Keywords()
             .add('zephyr')
             .add('chinook')
             .add('sirocco')
-            
 
         const text = `
         The chinook flew through the sirocco like a 

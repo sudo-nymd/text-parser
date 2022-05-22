@@ -1,4 +1,4 @@
 import { Keywords } from "./keywords";
-import { Dates } from "./dates";
+import { dates } from "./dates";
 
-export { Keywords, Dates}
+export { Keywords, dates}

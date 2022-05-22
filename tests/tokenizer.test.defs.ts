@@ -20,6 +20,19 @@ export const countOfTokensByType = (type: TokenTypes, tokens: Token[]) => {
     return count;
 }
 
+export const countOfTokensByPluginName = (name: string, tokens: Token[]) => {
+    let initialValue: number = 0;
+
+    const fn = (acc, token) => {
+        if (token.pluginName === name) {
+            acc++;
+        }
+        return acc;
+    }
+    const count = tokens.reduce(fn, initialValue);
+    return count;
+}
+
 export const LINE_TESTS = [
     {
         text: `The quick, brown {fox} jumped [over] the [lazy] dog, and the cow "jumped over" the moon!`,
