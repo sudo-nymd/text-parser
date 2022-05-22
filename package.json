@@ -15,7 +15,7 @@
     "start": "node ./lib/index.js"
   },
   "keywords": [],
-  "author": "TylerDurham <TylerDurham@users.noreply.github.com> (https://github.com/TylerDurham)",
+  "author": "TylerDurham <sudo-nymd@outlook.com> (https://github.com/TylerDurham)",
   "license": "MIT",
   "devDependencies": {
     "@istanbuljs/nyc-config-typescript": "^1.0.2",
@@ -39,5 +39,18 @@
   },
   "dependencies": {
     "dotenv": "^16.0.1"
-  }
+  },
+  "types": "./lib/index.d.ts",
+  "directories": {
+    "lib": "lib",
+    "test": "tests"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sudo-nymd/text-parser.git"
+  },
+  "bugs": {
+    "url": "https://github.com/sudo-nymd/text-parser/issues"
+  },
+  "homepage": "https://github.com/sudo-nymd/text-parser#readme"
 }
