@@ -1,10 +1,9 @@
 import { expect } from 'chai';
-import { datesPluginTestRunner } from './plugin-dates-test-def';
+import { pluginDatesTestDef } from './plugin-dates-test-def';
 import * as logger from './lib/logger';
 import Tokenizer, { Token } from '../src/tokenizer';
-import { countOfTokensByType, countOfTokensByPluginName, LINE_TESTS, TOKEN_TESTS } from './tokenizer.test.defs';
-import { Keywords, dates } from '../src/plugins';
-import { keywordsPluginTestRunner } from './plugin-keywords-test-def';
+import { countOfTokensByType, LINE_TESTS, TOKEN_TESTS } from './tokenizer-test-def';
+import { pluginKeywordsTestDef } from './plugin-keywords-test-def';
 
 // "Stateless" logging functions (avoid clashes with Mocha's hijackng of "this")
 const LOGENTRY = logger.create(`START`);
@@ -23,18 +22,24 @@ describe(`Tests the Tokenizer module.`, function () {
 
         const tokenizer = new Tokenizer();
         
-        datesPluginTestRunner.tests.forEach(function(test) {
+        // Loop through each test def...
+        pluginDatesTestDef.tests.forEach(function(test) {
             const { name, text, expected } = test;
             const tokens = [];
             debug({ msg: `Starting test name "${test.name}".`, text: text});
-            tokenizer.init(text, datesPluginTestRunner.plugins);
+
+            // ...Initialize tokenizer with plugins ...
+            tokenizer.init(text, pluginDatesTestDef.plugins);
+
+            // ... process each token ...
             while (tokenizer.hasMoretokens()) {
                 const token = tokenizer.getNextToken();
                 tokens.push(token);
                 debug(token);
             }
 
-            const actual = datesPluginTestRunner.getStatistics(tokens);
+            // ...check counts of tokens.
+            const actual = pluginDatesTestDef.getStatistics(tokens);
             expect(actual, `${name}`).to.have.deep.equals(expected);
         })
 
@@ -44,18 +49,24 @@ describe(`Tests the Tokenizer module.`, function () {
     it(`Tests the Keywords Plugin`, function (done) {
         const tokenizer = new Tokenizer();
 
-        keywordsPluginTestRunner.tests.forEach(function (test) {
+        // Loop through each test def...
+        pluginKeywordsTestDef.tests.forEach(function (test) {
             const { name, text, expected } = test;
             const tokens = [];
             debug({ msg: `Starting test name "${test.name}".`, text: text });
-            tokenizer.init(text, [keywordsPluginTestRunner.plugins]);
+
+            // ...Initialize tokenizer with plugins ...
+            tokenizer.init(text, [pluginKeywordsTestDef.plugins]);
+
+            // ... process each token ...
             while (tokenizer.hasMoretokens()) {
                 const token = tokenizer.getNextToken();
                 tokens.push(token);
                 debug(token);
             }
 
-            const actual = keywordsPluginTestRunner.getStatistics(tokens);
+            // ...check counts of tokens.
+            const actual = pluginKeywordsTestDef.getStatistics(tokens);
             expect(actual, `${name}`).to.have.deep.equals(expected);
         })
 

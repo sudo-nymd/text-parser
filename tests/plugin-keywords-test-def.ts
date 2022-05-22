@@ -58,7 +58,7 @@ KEYWORDS.forEach(function(keyword) {
     keywords.add(keyword);
 });
 
-export const keywordsPluginTestRunner = {
+export const pluginKeywordsTestDef = {
     getStatistics: function (tokens: Token[]) {
         return {
             "phrase": countOfTokens(tokens, 'phrase'),

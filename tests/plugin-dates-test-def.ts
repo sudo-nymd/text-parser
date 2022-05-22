@@ -1,6 +1,9 @@
 import { dates } from '../src/plugins';
 import { Token } from '../src/tokenizer';
 
+/**
+ * Sample data to use.
+ */
 const DAYS_OF_WEEK = [
     'Sunday',
     'Sun',
@@ -18,11 +21,23 @@ const DAYS_OF_WEEK = [
     'Sat'
 ]
 
+/**
+ * Generates a random day of the week.
+ * @returns The day of the week.
+ */
 const randomDayOfWeek = () => {
     const index = Math.round(Math.random() * (DAYS_OF_WEEK.length - 1));
     return DAYS_OF_WEEK[index];
 }
 
+/**
+ * Reduce that calculates the count of tokens matching either the 
+ * type or the plugin name.
+ * @param tokens Array of tokens to reduce.
+ * @param type The type of token to reduce by.
+ * @param name The plugin name of token to reduce by.
+ * @returns The count of tokens matching the type of the plugin name.
+ */
 const countOfTokens = (tokens: Token[], type: string, name: string = null) => {
     let initialValue: number = 0;
 
@@ -98,7 +113,7 @@ const tests = [
     }
 ]
 
-export const datesPluginTestRunner = {
+export const pluginDatesTestDef = {
     getStatistics: function (tokens: Token[]) {
         return {
             "plugin": countOfTokens(tokens, 'plugin'),
@@ -112,15 +127,15 @@ export const datesPluginTestRunner = {
     tests: tests
 }
 
-
-
-/**
-text: ``,
-        counts: {
-            plugin: 0,
-            ['long-date']: 0,
-            ['short-date']: 0,
-            ['iso-date']: 0,
-            ['day-of-week']: 0
-        }
+/** TEMPLATE
+{
+    text: ``,
+    expected: {
+        plugin: 0,
+        ['long-date']: 0,
+        ['short-date']: 0,
+        ['iso-date']: 0,
+        ['day-of-week']: 0
+    }
+}
  */
