@@ -1,6 +1,6 @@
 {
   "name": "@sudo-nymd/text-parser",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "A simple, yet flexible, library for making sense out of text.",
   "main": "lib/index.js",
   "files": [
