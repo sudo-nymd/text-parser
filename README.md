@@ -96,4 +96,10 @@ Any single word.
 
 ## Plugins
 
+### Keywords Plugin
+
+```COMING SOON```
+
+### Date Plugins
+
 ```COMING SOON```
