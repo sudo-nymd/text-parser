@@ -1,5 +1,6 @@
 import { dates } from '../src/plugins';
 import { Token } from '../src/tokenizer';
+import { countOfTokens, randomItem } from './lib/common';
 
 /**
  * Sample data to use.
@@ -26,30 +27,7 @@ const DAYS_OF_WEEK = [
  * @returns The day of the week.
  */
 const randomDayOfWeek = () => {
-    const index = Math.round(Math.random() * (DAYS_OF_WEEK.length - 1));
-    return DAYS_OF_WEEK[index];
-}
-
-/**
- * Reduce that calculates the count of tokens matching either the 
- * type or the plugin name.
- * @param tokens Array of tokens to reduce.
- * @param type The type of token to reduce by.
- * @param name The plugin name of token to reduce by.
- * @returns The count of tokens matching the type of the plugin name.
- */
-const countOfTokens = (tokens: Token[], type: string, name: string = null) => {
-    let initialValue: number = 0;
-
-    const fn = (acc, token) => {
-        const reduce = (name === null && token.type === type) || (token.type === type && token.pluginName === name)
-        if (reduce) {
-            acc++;
-        }
-        return acc;
-    }
-    const count = tokens.reduce(fn, initialValue);
-    return count;
+    return randomItem(DAYS_OF_WEEK);
 }
 
 const tests = [
@@ -113,7 +91,17 @@ const tests = [
     }
 ]
 
-export const pluginDatesTestDef = {
+/**
+ * TestDefinition
+ * 
+ * @description Used by the test runner. 
+ */
+export const TestDefinition = {
+    /**
+     * Callback that generates expected counts.
+     * @param tokens Array of tokens to scan.
+     * @returns The count of matching tokens.
+     */
     getStatistics: function (tokens: Token[]) {
         return {
             "plugin": countOfTokens(tokens, 'plugin'),
@@ -123,7 +111,11 @@ export const pluginDatesTestDef = {
             "day-of-week": countOfTokens(tokens, 'plugin', 'day-of-week')
         }
     },
+
+    /** The plugin(s) to test. */
     plugins: dates,
+
+    /** The tests to execute. */
     tests: tests
 }
 

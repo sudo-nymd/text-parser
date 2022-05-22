@@ -1,30 +1,26 @@
-import { dates, Keywords } from '../src/plugins';
+import { Keywords } from '../src/plugins';
 import { Token } from '../src/tokenizer';
+import { countOfTokens, randomItem } from './lib/common';
 
+/**
+ * Sample data to use.
+ */
 const KEYWORDS = [
     'sirocco',
     'zephyr',
     'chinook',
-    'gale'
+    'gale',
+    'wind',
+    'hurricane',
+    'tornado'
 ]
 
+/**
+ * Generates a random keyword.
+ * @returns The keyword.
+ */
 const randomKeyword = () => {
-    const index = Math.round(Math.random() * (KEYWORDS.length - 1));
-    return KEYWORDS[index];
-}
-
-const countOfTokens = (tokens: Token[], type: string, name: string = null) => {
-    let initialValue: number = 0;
-
-    const fn = (acc, token) => {
-        const reduce = (name === null && token.type === type) || (token.type === type && token.pluginName === name)
-        if (reduce) {
-            acc++;
-        }
-        return acc;
-    }
-    const count = tokens.reduce(fn, initialValue);
-    return count;
+    return randomItem(KEYWORDS);
 }
 
 const tests = [
@@ -53,12 +49,25 @@ const tests = [
     }
 ]
 
+/**
+ * Prepare the plugin for export.
+ */
 const keywords = new Keywords();
 KEYWORDS.forEach(function(keyword) {
     keywords.add(keyword);
 });
 
-export const pluginKeywordsTestDef = {
+/**
+ * TestDefinition
+ * 
+ * @description Used by the test runner. 
+ */
+export const TestDefinition = {
+    /**
+     * Callback that generates expected counts.
+     * @param tokens Array of tokens to scan.
+     * @returns The count of matching tokens.
+     */
     getStatistics: function (tokens: Token[]) {
         return {
             "phrase": countOfTokens(tokens, 'phrase'),
@@ -66,7 +75,11 @@ export const pluginKeywordsTestDef = {
             "keyword": countOfTokens(tokens, 'plugin', 'keyword')
         }
     },
+
+    /** The plugin(s) to test. */
     plugins: keywords.plugin(),
+
+    /** The tests to execute. */
     tests: tests
 }
 
