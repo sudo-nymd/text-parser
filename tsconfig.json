@@ -1,14 +1,21 @@
 {
+  "compileOnSave": true,
   "compilerOptions": {
-    "target": "es2016",
     "module": "CommonJS",
+    "target": "ES2016",
     "esModuleInterop": true,
-    "resolveJsonModule": true,
-    "skipLibCheck": true,
-    "outDir": "build",
     "sourceMap": true,
-    "declaration": true
-  }, "include": [
-    "./src/**/*.ts"
+    "outDir": "./build",
+    "declaration": true,
+    "declarationDir": "./lib",
+    "lib": [
+      "DOM", "ES2016"
+    ]
+  },
+  "include": [
+    "./src"
+  ],
+  "exclude": [
+    "tests/**/*.spec.ts"
   ]
 }
