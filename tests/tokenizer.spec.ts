@@ -1,9 +1,10 @@
 import * as logger from './lib/logger';
 import Tokenizer, { Token } from '../src/tokenizer';
-import { countOfTokensByType, LINE_TESTS, TOKEN_TESTS } from './oldtokenizer-test-def';
+//import { countOfTokensByType, LINE_TESTS, TOKEN_TESTS } from './oldtokenizer-test-def';
 import { expect } from 'chai';
 import { TestDefinition as DATES_TEST_DEF } from './plugin-dates-test-def';
 import { TestDefinition as KEYWORDS_TEST_DEF } from './plugin-keywords-test-def';
+import { TestDefinition as TOKENS_TEST_DEF } from './tokens-test-def';
 
 // "Stateless" logging functions (avoid clashes with Mocha's hijackng of "this")
 const LOGENTRY = logger.create(`START`);
@@ -21,6 +22,9 @@ describe(`Tests the Tokenizer module.`, function () {
     it(`Tests the Dates Plugin`, function (done) {
 
         const tokenizer = new Tokenizer();
+
+        // Grab metadata about current executing Mocha test.
+        const { title } = this.test;
         
         // Loop through each test def...
         DATES_TEST_DEF.tests.forEach(function(test) {
@@ -40,7 +44,7 @@ describe(`Tests the Tokenizer module.`, function () {
 
             // ...check counts of tokens.
             const actual = DATES_TEST_DEF.getStatistics(tokens);
-            expect(actual, `${name}`).to.have.deep.equals(expected);
+            expect(actual, `"${title}" - "${name}"`).to.have.deep.equals(expected);
         })
 
         done();
@@ -48,6 +52,9 @@ describe(`Tests the Tokenizer module.`, function () {
 
     it(`Tests the Keywords Plugin`, function (done) {
         const tokenizer = new Tokenizer();
+
+        // Grab metadata about current executing Mocha test.
+        const { title } = this.test;
 
         // Loop through each test def...
         KEYWORDS_TEST_DEF.tests.forEach(function (test) {
@@ -67,45 +74,46 @@ describe(`Tests the Tokenizer module.`, function () {
 
             // ...check counts of tokens.
             const actual = KEYWORDS_TEST_DEF.getStatistics(tokens);
-            expect(actual, `${name}`).to.have.deep.equals(expected);
+            expect(actual, `"${title}" - "${name}"`).to.have.deep.equals(expected);
         })
 
         done();
     })
 
-    it.skip(`Tests each line for tokens.`, function (done) {
+    it(`Tests Each Line for Tokens`, function (done) {
+        
         const tokenizer = new Tokenizer();
-        LINE_TESTS.forEach( function (line) {
-            const tokens: Token[] = []
-            const { text, expectedStats } = line;
-            tokenizer.init(text);
 
-            while(tokenizer.hasMoretokens()) {
+        // Grab metadata about current executing Mocha test.
+        const { title } = this.test;
+
+        // Loop through each test def...
+        TOKENS_TEST_DEF.multipleTokenTests.forEach(function (test) {
+            const { name, text, expected } = test;
+            const tokens = [];
+            debug({ msg: `Starting test name "${test.name}".`, text: text });
+
+            // ...Initialize tokenizer with plugins ...
+            tokenizer.init(text, [TOKENS_TEST_DEF.plugins]);
+
+            // ... process each token ...
+            while (tokenizer.hasMoretokens()) {
                 const token = tokenizer.getNextToken();
                 tokens.push(token);
+                debug(token);
             }
 
-            const actualStats = {
-                whitespaceCount: countOfTokensByType('whitespace', tokens),
-                wordCount: countOfTokensByType('word', tokens),
-                phraseCount: countOfTokensByType('phrase', tokens),
-                characterCount: countOfTokensByType('character', tokens),
-                periodCount: countOfTokensByType('period', tokens),
-                commaCount: countOfTokensByType('comma', tokens),
-                exclaCount: countOfTokensByType('exclamation-point', tokens)
-            }
-            
-            debug({ text, expectedStats, actualStats}, "statistics");
-            expect(actualStats, "actualStats").to.have.deep.equals(expectedStats, "expectedStats")
-
-        });
+            // ...check counts of tokens.
+            const actual = TOKENS_TEST_DEF.getStatistics(tokens);
+            expect(actual, `"${title}" - "${name}"`).to.have.deep.equals(expected);
+        })
 
         done();
-    });
+    })
 
-    it.skip(`Tests a string of tokens.`, (done)=> {
+    it(`Tests a String of Tokens.`, (done)=> {
         // Create a long string of text by joining test tokens with spaces.
-        const text = TOKEN_TESTS.map((test) => {
+        const text = TOKENS_TEST_DEF.singleTokenTests.map((test) => {
             return test.text;
         }).join(' ');
 
@@ -120,7 +128,7 @@ describe(`Tests the Tokenizer module.`, function () {
             debug(token);
             if (tokenCount % 2 === 0) {
                 // Grab our test expected values
-                const { text, expected } = TOKEN_TESTS[testCount];
+                const { text, expected } = TOKENS_TEST_DEF.singleTokenTests[testCount];
                 expect(token.value, `Token value at position ${tokenCount} does not match`).to.equal(text)
                 expect(token.type, `Token type at position ${tokenCount} does not match`).to.equal(expected.type);
                 testCount++;
@@ -135,17 +143,17 @@ describe(`Tests the Tokenizer module.`, function () {
         // Check the count of returned tokens. We added spaces, so 
         // we should account for those: 
         //      A space for every token (* 2) minus 1
-        const expectedCount = TOKEN_TESTS.length * 2 - 1;
+        const expectedCount = TOKENS_TEST_DEF.singleTokenTests.length * 2 - 1;
         expect(tokenCount, `count of tokens`).to.equal(expectedCount);
 
         done();
     })
 
-    it(`Tests the individual tokens.`, function (done) {
+    it(`Tests the Individual Tokens.`, function (done) {
 
         const tokenizer = new Tokenizer();
 
-        TOKEN_TESTS.forEach((test) => {
+        TOKENS_TEST_DEF.singleTokenTests.forEach((test) => {
             const { text, expected } = test;
             tokenizer.init(text);
 
