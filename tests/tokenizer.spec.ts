@@ -4,7 +4,7 @@ import Tokenizer, { Token } from '../src/tokenizer';
 import { expect } from 'chai';
 import { TestDefinition as DATES_TEST_DEF } from './plugin-dates-test-def';
 import { TestDefinition as KEYWORDS_TEST_DEF } from './plugin-keywords-test-def';
-import { TestDefinition as TOKENS_TEST_DEF } from './tokens-test-def';
+import { TestDefinition as TOKENS_TEST_DEF } from './tokenizer-test-def';
 
 // "Stateless" logging functions (avoid clashes with Mocha's hijackng of "this")
 const LOGENTRY = logger.create(`START`);
