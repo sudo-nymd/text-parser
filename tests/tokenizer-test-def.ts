@@ -1,2 +1,2 @@
 import { Token } from '../src/tokenizer';
-import { countOfTokens, randomItem } from './lib/common';
+import { Statistics, randomItem } from './lib/common';

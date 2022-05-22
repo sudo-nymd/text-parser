@@ -1,6 +1,6 @@
 import { Keywords } from '../src/plugins';
 import { Token } from '../src/tokenizer';
-import { countOfTokens, randomItem } from './lib/common';
+import { Statistics as stats, randomItem } from './lib/common';
 
 /**
  * Sample data to use.
@@ -23,7 +23,7 @@ const randomKeyword = () => {
     return randomItem(KEYWORDS);
 }
 
-const tests = [
+const Tests = [
     {
         name: `A couple of keywords`,
         text: `The chinook flew through the sirocco like a 
@@ -70,9 +70,9 @@ export const TestDefinition = {
      */
     getStatistics: function (tokens: Token[]) {
         return {
-            "phrase": countOfTokens(tokens, 'phrase'),
-            "plugin": countOfTokens(tokens, 'plugin'),
-            "keyword": countOfTokens(tokens, 'plugin', 'keyword')
+            "phrase": stats.countOfTokens(tokens, stats.filters.isTokenType('phrase')),
+            "plugin": stats.countOfTokens(tokens, stats.filters.isTokenType('plugin')),
+            "keyword": stats.countOfTokens(tokens,stats.filters.isPluginType('keyword'))
         }
     },
 
@@ -80,6 +80,6 @@ export const TestDefinition = {
     plugins: keywords.plugin(),
 
     /** The tests to execute. */
-    tests: tests
+    tests: Tests
 }
 

@@ -1,6 +1,6 @@
 import { dates } from '../src/plugins';
 import { Token } from '../src/tokenizer';
-import { countOfTokens, countOfTokensEx, randomItem, filters } from './lib/common';
+import { randomItem, Statistics as stats } from './lib/common';
 
 /**
  * Sample data to use.
@@ -38,12 +38,12 @@ const Tests = [
         tue tuesday ISO Date 2000/01/09
         `,
         expected: {
-        ['plugin']: 6,
-        ['long-date']: 0,
-        ['short-date']: 0,
-        ['iso-date']: 1,
-        ['day-of-week']: 5
-    }
+            ['plugin']: 6,
+            ['long-date']: 0,
+            ['short-date']: 0,
+            ['iso-date']: 1,
+            ['day-of-week']: 5
+        }
     },
     {
         name: `Single Long Date`,
@@ -104,11 +104,11 @@ export const TestDefinition = {
      */
     getStatistics: function (tokens: Token[]) {
         return {
-            "plugin": countOfTokensEx(tokens, filters.isTokenType('plugin')),
-            "long-date": countOfTokensEx(tokens, filters.isPluginType('long-date')),
-            "short-date": countOfTokensEx(tokens, filters.isPluginType('short-date')),
-            "iso-date": countOfTokensEx(tokens, filters.isPluginType('iso-date')),
-            "day-of-week": countOfTokensEx(tokens, filters.isPluginType('day-of-week'))
+            "plugin": stats.countOfTokens(tokens, stats.filters.isTokenType('plugin')),
+            "long-date": stats.countOfTokens(tokens, stats.filters.isPluginType('long-date')),
+            "short-date": stats.countOfTokens(tokens, stats.filters.isPluginType('short-date')),
+            "iso-date": stats.countOfTokens(tokens, stats.filters.isPluginType('iso-date')),
+            "day-of-week": stats.countOfTokens(tokens, stats.filters.isPluginType('day-of-week'))
         }
     },
 
