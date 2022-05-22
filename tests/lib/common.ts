@@ -1,25 +1,42 @@
 import { Token } from "../../src/tokenizer";
 
 /**
- * Reduce that calculates the count of tokens matching either the 
+ * Reducer that calculates the count of tokens matching either the 
  * type or the plugin name.
  * @param tokens Array of tokens to reduce.
- * @param type The type of token to reduce by.
- * @param name The plugin name of token to reduce by.
- * @returns The count of tokens matching the type of the plugin name.
+ * @param filter Callback that provides a filter to reduce the array by.
+ * @returns The count of tokens matching the filter.
  */
-export const countOfTokens = (tokens: Token[], type: string, name: string = null) => {
-    let initialValue: number = 0;
+const countOfTokensEx = (tokens: Token[], filter: TokenFilterFunction) => {
+    let initialValue = 0;
 
     const fn = (acc, token) => {
-        const reduce = (name === null && token.type === type) || (token.type === type && token.pluginName === name)
-        if (reduce) {
+        const shouldReduce = (filter(token) == true);
+        if (shouldReduce) {
             acc++;
         }
         return acc;
     }
+
     const count = tokens.reduce(fn, initialValue);
     return count;
+
+}
+
+type TokenFilterFunction = (token) => boolean;
+
+const filters = {
+    isTokenType: (type: string): TokenFilterFunction => {
+        return (token) => { return token.type === type };
+    },
+    isPluginType: (name: string): TokenFilterFunction => {
+        return (token) => { return token.type === 'plugin' && token.pluginName === name };
+    }
+}
+
+export const Statistics = {
+    filters: filters,
+    countOfTokens: countOfTokensEx
 }
 
 /**
