@@ -1,6 +1,6 @@
 import { dates } from '../src/plugins';
 import { Token } from '../src/tokenizer';
-import { countOfTokens, randomItem } from './lib/common';
+import { countOfTokens, countOfTokensEx, randomItem, filters } from './lib/common';
 
 /**
  * Sample data to use.
@@ -30,7 +30,7 @@ const randomDayOfWeek = () => {
     return randomItem(DAYS_OF_WEEK);
 }
 
-const tests = [
+const Tests = [
     {
         name: `ISO Date`,
         text: `
@@ -104,11 +104,11 @@ export const TestDefinition = {
      */
     getStatistics: function (tokens: Token[]) {
         return {
-            "plugin": countOfTokens(tokens, 'plugin'),
-            "long-date": countOfTokens(tokens, 'plugin', 'long-date'),
-            "short-date": countOfTokens(tokens, 'plugin', 'short-date'),
-            "iso-date": countOfTokens(tokens, 'plugin', 'iso-date'),
-            "day-of-week": countOfTokens(tokens, 'plugin', 'day-of-week')
+            "plugin": countOfTokensEx(tokens, filters.isTokenType('plugin')),
+            "long-date": countOfTokensEx(tokens, filters.isPluginType('long-date')),
+            "short-date": countOfTokensEx(tokens, filters.isPluginType('short-date')),
+            "iso-date": countOfTokensEx(tokens, filters.isPluginType('iso-date')),
+            "day-of-week": countOfTokensEx(tokens, filters.isPluginType('day-of-week'))
         }
     },
 
@@ -116,7 +116,7 @@ export const TestDefinition = {
     plugins: dates,
 
     /** The tests to execute. */
-    tests: tests
+    tests: Tests
 }
 
 /** TEMPLATE
