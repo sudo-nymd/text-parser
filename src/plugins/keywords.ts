@@ -24,7 +24,7 @@ class Keywords {
      * @param typeName The token's desired type name. 
      * @returns The Keywords instance.
      */
-    constructor(typeName: string = 'keywords') {
+    constructor(typeName: string = 'keyword') {
         this._keywords = [];
         this._typeName = typeName;
 

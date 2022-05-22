@@ -19,7 +19,7 @@ const DAYS_OF_WEEK = [
 ]
 
 const randomDayOfWeek = () => {
-    const index = Math.round(Math.random() * DAYS_OF_WEEK.length - 1);
+    const index = Math.round(Math.random() * (DAYS_OF_WEEK.length - 1));
     return DAYS_OF_WEEK[index];
 }
 
@@ -38,6 +38,20 @@ const countOfTokens = (tokens: Token[], type: string, name: string = null) => {
 }
 
 const tests = [
+    {
+        name: `ISO Date`,
+        text: `
+        On Monday, I have a dentist appointment. Thursday is the day before fri
+        tue tuesday ISO Date 2000/01/09
+        `,
+        expected: {
+        ['plugin']: 6,
+        ['long-date']: 0,
+        ['short-date']: 0,
+        ['iso-date']: 1,
+        ['day-of-week']: 5
+    }
+    },
     {
         name: `Single Long Date`,
         text: `On Dec 14, 1911, the South Pole first reached by Roald Amundsen.`,
