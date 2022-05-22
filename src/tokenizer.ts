@@ -95,7 +95,7 @@ class Tokenizer {
         if (plugins != null) {
             if (Array.isArray(plugins)) {
                 plugins.forEach((plugin => {
-                    if (plugin.pattern && plugin.type) {
+                    if (plugin !== null && plugin.pattern && plugin.type) {
                         this._plugins.push({
                             pattern: plugin.pattern,
                             type: 'plugin',
