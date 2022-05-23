@@ -1,4 +1,4 @@
-import { Token, TokenSubTypes, TokenTypes } from "../../src/common/token-types";
+import { Token, TokenTypes, TokenSuperTypes } from "../../src/common/token-types";
 
 /**
  * Reducer that calculates the count of tokens matching either the 
@@ -26,14 +26,14 @@ const countOfTokensEx = (tokens: Token[], filter: TokenFilterFunction) => {
 type TokenFilterFunction = (token) => boolean;
 
 const filters = {
-    isTokenSubType: (subType: TokenSubTypes): TokenFilterFunction => {
-        return (token) => { return token.subType === subType };
-    },
     isTokenType: (type: TokenTypes): TokenFilterFunction => {
         return (token) => { return token.type === type };
     },
+    isTokenSuperType: (superType: TokenSuperTypes): TokenFilterFunction => {
+        return (token) => { return token.superType === superType };
+    },
     isPluginType: (name: string): TokenFilterFunction => {
-        return (token) => { return token.type === 'plugin' && token.subType === name };
+        return (token) => { return token.superType === 'plugin' && token.type === name };
     }
 }
 

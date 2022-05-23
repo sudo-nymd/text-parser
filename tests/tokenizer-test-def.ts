@@ -1,10 +1,10 @@
-import { Token, TokenSubTypes } from '../src/common/token-types'
+import { Token, TokenTypes } from '../src/common/token-types'
 import { Statistics as stats, randomItem } from './lib/common';
 
 type SingleTokenTest = {
     text: string,
     expected: {
-        subType: TokenSubTypes
+        subType: TokenTypes
     }
 }
 
@@ -12,61 +12,61 @@ const SingleTokenTests: SingleTokenTest[] = [
     {
         text: `[brace]`,
         expected: {
-            subType: TokenSubTypes.Braced
+            subType: TokenTypes.Braced
         }
     },
     {
         text: `{bracket}`,
         expected: {
-            subType: TokenSubTypes.Bracketed
+            subType: TokenTypes.Bracketed
         }
     },
     {
         text: `{bracket phrase}`,
         expected: {
-            subType: TokenSubTypes.Bracketed
+            subType: TokenTypes.Bracketed
         }
     },
     {
         text: `[brace phrase]`,
         expected: {
-            subType: TokenSubTypes.Braced
+            subType: TokenTypes.Braced
         }
     },
     {
         text: `"double quote phrase"`,
         expected: {
-            subType: TokenSubTypes.DoubleQuoted
+            subType: TokenTypes.DoubleQuoted
         }
     },
     {
         text: `'single quote phrase'`,
         expected: {
-            subType: TokenSubTypes.SingleQuoted
+            subType: TokenTypes.SingleQuoted
         }
     },
     {
         text: `word`,
         expected: {
-            subType: TokenSubTypes.Word
+            subType: TokenTypes.Word
         }
     },
     {
         text: `.`,
         expected: {
-            subType: TokenSubTypes.Period
+            subType: TokenTypes.Period
         }
     },
     {
         text: `,`,
         expected: {
-            subType: TokenSubTypes.Comma
+            subType: TokenTypes.Comma
         }
     },
     {
         text: `!`,
         expected: {
-            subType: TokenSubTypes.ExclamationPoint
+            subType: TokenTypes.ExclamationPoint
         }
     }
 ]
@@ -76,15 +76,15 @@ const MultipleTokenTests = [
         name: `Tests a Single Line`,
         text: `The quick, brown {fox} jumped [over] the [lazy] dog, and the cow "jumped over" the moon!`,
         expected: {
-            [TokenSubTypes.Comma]: 2,               // Should detect this many commas
-            [TokenSubTypes.DoubleQuoted]: 1,        // Should detect this many dbl quote phrases
-            [TokenSubTypes.SingleQuoted]: 0,        // Should detect this many dbl quote phrases
-            [TokenSubTypes.Period]: 0,              // Should detect this many periods
-            [TokenSubTypes.ExclamationPoint]: 1,    // Should detect this many exclamation points
-            [TokenSubTypes.Character]: 0,           // Should detect this many characters
+            [TokenTypes.Comma]: 2,               // Should detect this many commas
+            [TokenTypes.DoubleQuoted]: 1,        // Should detect this many dbl quote phrases
+            [TokenTypes.SingleQuoted]: 0,        // Should detect this many dbl quote phrases
+            [TokenTypes.Period]: 0,              // Should detect this many periods
+            [TokenTypes.ExclamationPoint]: 1,    // Should detect this many exclamation points
+            [TokenTypes.Character]: 0,           // Should detect this many characters
             //['phrase']: 3,                       // Should detect this many phrases
-            [TokenSubTypes.Word]: 11,               // Should detect this many words
-            [TokenSubTypes.Whitespace]: 14          // Should detect this many words
+            [TokenTypes.Word]: 11,               // Should detect this many words
+            [TokenTypes.Whitespace]: 14          // Should detect this many words
         }
     }
 ]
@@ -102,14 +102,14 @@ export const TestDefinition = {
      */
     getStatistics: function (tokens: Token[]) {
         return {
-            [TokenSubTypes.Comma]: stats.countOfTokens(tokens, stats.filters.isTokenSubType(TokenSubTypes.Comma)),
-            [TokenSubTypes.Period]: stats.countOfTokens(tokens, stats.filters.isTokenSubType(TokenSubTypes.Period)),
-            [TokenSubTypes.DoubleQuoted]: stats.countOfTokens(tokens, stats.filters.isTokenSubType(TokenSubTypes.DoubleQuoted)),
-            [TokenSubTypes.SingleQuoted]: stats.countOfTokens(tokens, stats.filters.isTokenSubType(TokenSubTypes.SingleQuoted)),
-            [TokenSubTypes.Word]: stats.countOfTokens(tokens, stats.filters.isTokenSubType(TokenSubTypes.Word)),
-            [TokenSubTypes.Character]: stats.countOfTokens(tokens, stats.filters.isTokenSubType(TokenSubTypes.Character)),
-            [TokenSubTypes.ExclamationPoint]: stats.countOfTokens(tokens, stats.filters.isTokenSubType(TokenSubTypes.ExclamationPoint)),
-            [TokenSubTypes.Whitespace]: stats.countOfTokens(tokens, stats.filters.isTokenSubType(TokenSubTypes.Whitespace))
+            [TokenTypes.Comma]: stats.countOfTokens(tokens, stats.filters.isTokenType(TokenTypes.Comma)),
+            [TokenTypes.Period]: stats.countOfTokens(tokens, stats.filters.isTokenType(TokenTypes.Period)),
+            [TokenTypes.DoubleQuoted]: stats.countOfTokens(tokens, stats.filters.isTokenType(TokenTypes.DoubleQuoted)),
+            [TokenTypes.SingleQuoted]: stats.countOfTokens(tokens, stats.filters.isTokenType(TokenTypes.SingleQuoted)),
+            [TokenTypes.Word]: stats.countOfTokens(tokens, stats.filters.isTokenType(TokenTypes.Word)),
+            [TokenTypes.Character]: stats.countOfTokens(tokens, stats.filters.isTokenType(TokenTypes.Character)),
+            [TokenTypes.ExclamationPoint]: stats.countOfTokens(tokens, stats.filters.isTokenType(TokenTypes.ExclamationPoint)),
+            [TokenTypes.Whitespace]: stats.countOfTokens(tokens, stats.filters.isTokenType(TokenTypes.Whitespace))
         }
     },
 

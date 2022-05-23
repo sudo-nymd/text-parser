@@ -1,6 +1,6 @@
 import { config } from "./common/config";
-import { TokenSpec, TokenSpecs, PluginTokenSpec } from "./common/token-registry";
-import { TokenTypes, Token, TokenSubTypes } from "./common/token-types";
+import { TokenSpec, TokenSpecs, PluginTokenSpec } from "./common/token-specs";
+import { TokenSuperTypes, Token, TokenTypes } from "./common/token-types";
 
 const DEBUGGING: boolean = (process.env.DEBUG !== undefined);
 class Tokenizer {
@@ -20,7 +20,7 @@ class Tokenizer {
     /**
      * Initializes the tokenizer.
      */
-    init(text: string, plugins?: TokenSpec[]) {
+    init(text: string, plugins?: PluginTokenSpec[]) {
         // Store for later use.
         this._text = text;
 
@@ -33,10 +33,10 @@ class Tokenizer {
         if (plugins != null) {
             if (Array.isArray(plugins)) {
                 plugins.forEach((plugin => {
-                    if (plugin !== null && plugin.pattern && plugin.subType) {
+                    if (plugin !== null && plugin.pattern && plugin.type) {
                         this._plugins.push({
-                            type: TokenTypes.Plugin,
-                            subType: plugin.subType,
+                            superType: TokenSuperTypes.Plugin,
+                            type: plugin.type,
                             pattern: plugin.pattern
                         });
                     }
@@ -50,23 +50,23 @@ class Tokenizer {
     }
 
     private _match(spec: TokenSpec, text: string) {
-        const { pattern, type, subType } = spec;
+        const { pattern, superType, type } = spec;
         const matched = pattern.exec(text);
         if (matched !== null) {
 
             const match = matched[0];
             this._cursor += match.length;
 
-            if (spec.type === 'plugin' && spec.subType !== undefined) {
+            if (superType === 'plugin' && superType !== undefined) {
                 return {
-                    type: 'plugin',
+                    superType: 'plugin',
                     value: match,
-                    subType: spec.subType
+                    type: spec.type
                 }
             } else {
                 return {
+                    superType: superType,
                     type: type,
-                    subType: subType,
                     value: match,
                 }
             }

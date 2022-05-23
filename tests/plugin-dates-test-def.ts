@@ -1,6 +1,7 @@
 import { dates } from '../src/plugins';
-import { Token, TokenSubTypes, TokenTypes } from '../src/common/token-types';
+import { Token, TokenTypes, TokenSuperTypes } from '../src/common/token-types';
 import { randomItem, Statistics as stats } from './lib/common';
+import { PluginTokenSpec } from '../src/common/token-specs';
 
 /**
  * Sample data to use.
@@ -104,7 +105,7 @@ export const TestDefinition = {
      */
     getStatistics: function (tokens: Token[]) {
         return {
-            "plugin": stats.countOfTokens(tokens, stats.filters.isTokenType(TokenTypes.Plugin)),
+            "plugin": stats.countOfTokens(tokens, stats.filters.isTokenSuperType(TokenSuperTypes.Plugin)),
             "long-date": stats.countOfTokens(tokens, stats.filters.isPluginType('long-date')),
             "short-date": stats.countOfTokens(tokens, stats.filters.isPluginType('short-date')),
             "iso-date": stats.countOfTokens(tokens, stats.filters.isPluginType('iso-date')),
@@ -113,7 +114,7 @@ export const TestDefinition = {
     },
 
     /** The plugin(s) to test. */
-    plugins: dates,
+    plugins: dates as PluginTokenSpec[],
 
     /** The tests to execute. */
     tests: Tests

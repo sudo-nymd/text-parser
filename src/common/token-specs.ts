@@ -10,108 +10,112 @@ export type WordTokenTypes = 'word' | 'hyphened-word'
 export type TokenTypes = PhraseTokenTypes | WordTokenTypes | 'character' | 'whitespace' | 'unknown' | PunctuationTokenTypes | ExtendedTokenTypes
  */
 
-import { PhraseTokenSubTypes, TokenSubTypes, TokenTypes } from "./token-types";
+import { PhraseTokenSubTypes, TokenTypes, TokenSuperTypes } from "./token-types";
 
 export type TokenSpec = {
     pattern: RegExp;
-    subType: TokenSubTypes | string;
-    type: TokenTypes;
+    type: TokenTypes | string;
+    superType: TokenSuperTypes;
 }
 
 export type PhraseTokenSpec = TokenSpec & {
-    subType: PhraseTokenSubTypes;
-    type: TokenTypes.Phrase;
+    type: PhraseTokenSubTypes;
+    superType: TokenSuperTypes.Phrase;
     openChar: string;
     closeChar: string;
 }
 
 export type PluginTokenSpec = TokenSpec & {
-    type: TokenTypes.Plugin;
-    subType: string;
+    superType: TokenSuperTypes.Plugin;
+    type: string;
 }
 
 export const findPhraseByOpenChar = (char: string) => {
     return TokenSpecs.find((token: PhraseTokenSpec) => {
-        return (token.type === TokenTypes.Phrase && token.openChar && token.openChar === char)
+        return (token.superType === TokenSuperTypes.Phrase && token.openChar && token.openChar === char)
     });
 }
 
 type SpecItems = Array<TokenSpec | PhraseTokenSpec>;
 
+export const TokenPatterns = {
+    [TokenTypes.Whitespace]: /^\s+/
+}
+
 export const TokenSpecs: SpecItems = [
     {
-        pattern: /^\s+/,
-        subType: TokenSubTypes.Whitespace,
-        type: TokenTypes.Standard
+        pattern: TokenPatterns[TokenTypes.Whitespace],
+        type: TokenTypes.Whitespace,
+        superType: TokenSuperTypes.Standard
     },
     {
         pattern: /^"[^"]*"/, // /((?<![\\])['"])((?:.(?!(?<![\\])\1))*.?)\1/,  // /"[^"]*"/,
-        subType: TokenSubTypes.DoubleQuoted,
-        type: TokenTypes.Phrase,
+        type: TokenTypes.DoubleQuoted,
+        superType: TokenSuperTypes.Phrase,
         openChar: `"`,
         closeChar: `"`
     },
     {
         pattern: /^'[^']*'/,
-        subType: TokenSubTypes.SingleQuoted,
-        type: TokenTypes.Phrase,
+        type: TokenTypes.SingleQuoted,
+        superType: TokenSuperTypes.Phrase,
         openChar: `'`,
         closeChar: `'`
     },
     {
         pattern: /^{[^{]*}/,
-        subType: TokenSubTypes.Bracketed,
-        type: TokenTypes.Phrase,
+        type: TokenTypes.Bracketed,
+        superType: TokenSuperTypes.Phrase,
         openChar: `{`,
         closeChar: `}`
     },
     {
         pattern: /^\[[^\[]*\]/,
-        subType: TokenSubTypes.Braced,
-        type: TokenTypes.Phrase,
+        type: TokenTypes.Braced,
+        superType: TokenSuperTypes.Phrase,
         openChar: `[`,
         closeChar: `]`
     },
     {
         pattern: /^\([^\(]*\)/,
-        subType: TokenSubTypes.Parenthesis,
-        type: TokenTypes.Phrase,
+        type: TokenTypes.Parenthesis,
+        superType: TokenSuperTypes.Phrase,
         openChar: `(`,
         closeChar: `)`
     },
     {
         pattern: /^[\w]+/,
-        type: TokenTypes.Standard,
-        subType: TokenSubTypes.Word
+        superType: TokenSuperTypes.Standard,
+        type: TokenTypes.Word
     },
     {
         pattern: /^[\w]+-[\w]+/,
-        type: TokenTypes.Standard,
-        subType: TokenSubTypes.Hyphened
+        superType: TokenSuperTypes.Standard,
+        type: TokenTypes.Hyphened
     },
     {
         pattern: /^[^\s\w"'(\[\]{}\.,!]/,
-        type: TokenTypes.Standard,
-        subType: TokenSubTypes.Character
+        superType: TokenSuperTypes.Standard,
+        type: TokenTypes.Character
     },
     {
         pattern: /^\./,
-        type: TokenTypes.Standard,
-        subType: TokenSubTypes.Period
+        superType: TokenSuperTypes.Standard,
+        type: TokenTypes.Period
     },
     {
         pattern: /^,/,
-        type: TokenTypes.Standard,
-        subType: TokenSubTypes.Comma
+        superType: TokenSuperTypes.Standard,
+        type: TokenTypes.Comma
     },
     {
         pattern: /^!/,
-        type: TokenTypes.Standard,
-        subType: TokenSubTypes.ExclamationPoint
+        superType: TokenSuperTypes.Standard,
+        type: TokenTypes.ExclamationPoint
     },
     {
         pattern: /^'/,
-        type: TokenTypes.Standard,
-        subType: TokenSubTypes.Apostrophe
+        superType: TokenSuperTypes.Standard,
+        type: TokenTypes.Apostrophe
     }
 ]

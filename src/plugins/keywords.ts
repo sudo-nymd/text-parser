@@ -5,7 +5,7 @@
  */
 
 import { PluginTokenSpec } from '../common/token-specs';
-import { TokenTypes } from '../common/token-types';
+import { TokenSuperTypes } from '../common/token-types';
 
 /**
  * Encapsulates a list of keywords and generates the configuration 
@@ -69,8 +69,8 @@ class Keywords {
         const pattern = this._formatKeywords()
         const regItem: PluginTokenSpec = {
             pattern: new RegExp(pattern),
-            type: TokenTypes.Plugin,
-            subType: this._pluginName,
+            superType: TokenSuperTypes.Plugin,
+            type: this._pluginName,
         }
         return regItem;
     }

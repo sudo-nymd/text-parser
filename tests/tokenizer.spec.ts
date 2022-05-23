@@ -130,12 +130,12 @@ describe(`Tests the Tokenizer module.`, function () {
                 // Grab our test expected values
                 const { text, expected } = TOKENS_TEST_DEF.singleTokenTests[testCount];
                 expect(token.value, `Token value at position ${tokenCount} does not match`).to.equal(text)
-                expect(token.subType, `Token type at position ${tokenCount} does not match`).to.equal(expected.subType);
+                expect(token.type, `Token type at position ${tokenCount} does not match`).to.equal(expected.subType);
                 testCount++;
             } else {
                 // Every other token should be whitespace
                 expect(token.value, `Token value at position ${tokenCount} does not match`).to.equal(' ')
-                expect(token.subType, `Token type at position ${tokenCount} does not match`).to.equal('whitespace');
+                expect(token.type, `Token type at position ${tokenCount} does not match`).to.equal('whitespace');
             }
             tokenCount++;
         }
@@ -161,7 +161,7 @@ describe(`Tests the Tokenizer module.`, function () {
                 const token = tokenizer.getNextToken();
                 debug(token, text);
                 expect(token.value, `token.value`).to.equal(text);
-                expect(token.subType, `token.type`).to.equal(expected.subType);
+                expect(token.type, `token.type`).to.equal(expected.subType);
             }
         });
 

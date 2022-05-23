@@ -1,5 +1,5 @@
 import { Keywords } from '../src/plugins';
-import { Token, TokenSubTypes, TokenTypes } from '../src/common/token-types';
+import { Token, TokenTypes, TokenSuperTypes } from '../src/common/token-types';
 import { Statistics as stats, randomItem } from './lib/common';
 
 /**
@@ -72,9 +72,9 @@ export const TestDefinition = {
      */
     getStatistics: function (tokens: Token[]) {
         return {
-            "braced-phrase": stats.countOfTokens(tokens, stats.filters.isTokenSubType(TokenSubTypes.Braced)),
-            "bracketed-phrase": stats.countOfTokens(tokens, stats.filters.isTokenSubType(TokenSubTypes.Bracketed)),
-            "plugin": stats.countOfTokens(tokens, stats.filters.isTokenType(TokenTypes.Plugin)),
+            "braced-phrase": stats.countOfTokens(tokens, stats.filters.isTokenType(TokenTypes.Braced)),
+            "bracketed-phrase": stats.countOfTokens(tokens, stats.filters.isTokenType(TokenTypes.Bracketed)),
+            "plugin": stats.countOfTokens(tokens, stats.filters.isTokenSuperType(TokenSuperTypes.Plugin)),
             "keyword": stats.countOfTokens(tokens,stats.filters.isPluginType('keyword'))
         }
     },

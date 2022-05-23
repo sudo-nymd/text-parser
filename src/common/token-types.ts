@@ -1,24 +1,24 @@
 
 export type PhraseTokenSubTypes =
-    TokenSubTypes.Braced |
-    TokenSubTypes.Bracketed |
-    TokenSubTypes.SingleQuoted |
-    TokenSubTypes.DoubleQuoted |
-    TokenSubTypes.Parenthesis
+    TokenTypes.Braced |
+    TokenTypes.Bracketed |
+    TokenTypes.SingleQuoted |
+    TokenTypes.DoubleQuoted |
+    TokenTypes.Parenthesis
 
 export type PunctuationTokenSubTypes =
-    TokenSubTypes.Comma |
-    TokenSubTypes.Period |
-    TokenSubTypes.ExclamationPoint
+    TokenTypes.Comma |
+    TokenTypes.Period |
+    TokenTypes.ExclamationPoint
 
-export enum TokenTypes {
+export enum TokenSuperTypes {
     Standard = 'standard',
     Plugin = 'plugin',
     Phrase = 'phrase',
     Punctuation = 'punctuation'
 }
 
-export enum TokenSubTypes {
+export enum TokenTypes {
     Apostrophe = 'apostrophe',
     Braced = 'braced-phrase',
     Bracketed = 'bracketed-phrase',
@@ -35,12 +35,12 @@ export enum TokenSubTypes {
 }
 
 export type Token = {
-    subType: TokenSubTypes | string;
     type: TokenTypes | string;
+    superType: TokenSuperTypes | string;
     value: string;
 }
 
 export type PluginToken = Token & {
-    type: TokenTypes.Plugin;
-    subType: string;
+    superType: TokenSuperTypes.Plugin;
+    type: string;
 }

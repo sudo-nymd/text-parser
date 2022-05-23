@@ -1,16 +1,16 @@
-import { PluginTokenSpec } from "../common/token-registry";
-import { TokenTypes } from "../common/token-types";
+import { PluginTokenSpec } from "../common/token-specs";
+import { TokenSuperTypes } from "../common/token-types";
 
 export const email: PluginTokenSpec = {
     pattern: /^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/,
-    type: TokenTypes.Plugin,
-    subType: "email-address"
+    superType: TokenSuperTypes.Plugin,
+    type: "email-address"
 }
 
 export const url: PluginTokenSpec = {
     pattern: /^(https?:\/\/)?([\da-z\.-]+\.[a-z\.]{2,6}|[\d\.]+)([\/:?=&#]{1}[\da-z\.-]+)*[\/\?]?$/i,
-    type: TokenTypes.Plugin,
-    subType: "url"
+    superType: TokenSuperTypes.Plugin,
+    type: "url"
 }
 
 export const Internet = [
