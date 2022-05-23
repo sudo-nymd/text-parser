@@ -1,4 +1,4 @@
-import { Token } from "../../src/tokenizer";
+import { Token, TokenSubTypes, TokenTypes } from "../../src/common/token-types";
 
 /**
  * Reducer that calculates the count of tokens matching either the 
@@ -26,11 +26,14 @@ const countOfTokensEx = (tokens: Token[], filter: TokenFilterFunction) => {
 type TokenFilterFunction = (token) => boolean;
 
 const filters = {
-    isTokenType: (type: string): TokenFilterFunction => {
+    isTokenSubType: (subType: TokenSubTypes): TokenFilterFunction => {
+        return (token) => { return token.subType === subType };
+    },
+    isTokenType: (type: TokenTypes): TokenFilterFunction => {
         return (token) => { return token.type === type };
     },
     isPluginType: (name: string): TokenFilterFunction => {
-        return (token) => { return token.type === 'plugin' && token.pluginName === name };
+        return (token) => { return token.type === 'plugin' && token.subType === name };
     }
 }
 

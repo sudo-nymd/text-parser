@@ -1,3 +1,4 @@
+import { PhraseTokenSubTypes, PunctuationTokenSubTypes, Token, TokenSubTypes } from "./common/token-registry";
 import * as tok from "./tokenizer";
 import Tokenizer from "./tokenizer";
 
@@ -17,7 +18,7 @@ class Parser {
         this._tokenizer = new Tokenizer();
     }
 
-    private _lookahead: tok.Token;
+    private _lookahead: Token;
     private _tokenizer: Tokenizer;
     private _initialText: string;
 
@@ -37,14 +38,14 @@ class Parser {
         return this.Line();
     }
 
-    eat(tokenType: tok.TokenTypes): tok.Token {
+    eat(tokenType: TokenSubTypes): Token {
         const token = this._lookahead;
         if (token == null) {
             throw new SyntaxError(`Unexepcted end of input, exepcted: ${tokenType}`)
         }
 
-        if (token.type !== tokenType) {
-            throw new SyntaxError(`Unexpected token type: "${token.type}" - "${token.value}", exepcted: ${tokenType}`)
+        if (token.subType !== tokenType) {
+            throw new SyntaxError(`Unexpected token type: "${token.subType}" - "${token.value}", exepcted: ${tokenType}`)
         }
 
         this._lookahead = this._tokenizer.getNextToken();
@@ -88,8 +89,12 @@ class Parser {
      * @returns 
      */
     Literal() {
-        switch (this._lookahead.type) {
-            case 'phrase':
+        switch (this._lookahead.subType) {
+            case 'braced-phrase':
+            case 'bracketed-phrase':
+            case 'double-quoted-phrase':
+            case 'single-quoted-phrase':
+            case 'parenthesis-phrase':
                 return this.Phrase();
                 break;
 
@@ -116,20 +121,21 @@ class Parser {
                 break;
 
             default:
-                throw new SyntaxError(`Unknown lookahead type: ${this._lookahead.type}`);
+                throw new SyntaxError(`Unknown lookahead type: ${this._lookahead.subType}`);
         }
     }
 
     Phrase(): PhraseToken {
-        const token = this.eat('phrase') as PhraseToken;
+        
+        const token = this.eat(this._lookahead.subType) as PhraseToken;
         const value = token.value;
         
         token.open = {
-            type: 'character',
+            subType: TokenSubTypes.Character,
             value: value[0]
         }
         token.close = {
-            'type': 'character',
+            subType: TokenSubTypes.Character,
             value: value[token.value.length - 1]
         }
         token.value = value.slice(1, -1);
@@ -147,58 +153,58 @@ class Parser {
     }
 
     Punctuation(): CharacterToken {
-        const token = this.eat(this._lookahead.type) as CharacterToken;
+        const token = this.eat(this._lookahead.subType) as CharacterToken;
         token.flags = ParsedFlags.Punctuation;
         return token;
     }
 
     Unknown(): UnknownToken {
-        return this.eat('unknown') as UnknownToken;
+        return this.eat(TokenSubTypes.Unknown) as UnknownToken;
     }
 
     Whitespace(): WhitespaceToken {
-        return this.eat('whitespace') as WhitespaceToken;
+        return this.eat(TokenSubTypes.Whitespace) as WhitespaceToken;
     }
 
     Word(): WordToken {
-        return this.eat('word') as WordToken;
+        return this.eat(TokenSubTypes.Word) as WordToken;
     }
 
     Character(): CharacterToken {
-        return this.eat('character') as CharacterToken;
+        return this.eat(TokenSubTypes.Character) as CharacterToken;
     }
 }
 
 export default Parser;
 
-export type ParsedToken = tok.Token & {
+export type ParsedToken = Token & {
     flags?: ParsedFlags
 }
 
 export type UnknownToken = ParsedToken & {
-    type: 'unknown';
+    type: TokenSubTypes.Unknown;
 }
 
 export type WordToken = ParsedToken & {
-    type: 'word';
+    type: TokenSubTypes.Word;
 }
 
 export type PhraseToken = ParsedToken & {
-    type: 'phrase';
+    type: PhraseTokenSubTypes;
     open: CharacterToken;
     close: CharacterToken;
 }
 
 export type CharacterToken = ParsedToken & {
-    type: 'character'
+    type: TokenSubTypes.Character;
 }
 
 export type WhitespaceToken = ParsedToken & {
-    type: 'whitespace';
+    type: TokenSubTypes.Whitespace;
 }
 
 export type PunctuationToken = ParsedToken & {
-    type: tok.PunctuationTokenTypes;
+    type: PunctuationTokenSubTypes;
     value: '.' | ',' | '!'
 }
 

@@ -7,15 +7,14 @@
     "sourceMap": true,
     "outDir": "./lib",
     "declaration": true,
-    "declarationDir": "./lib",
-    "lib": [
-      "DOM", "ES2016"
-    ]
+    "declarationDir": "./lib"
   },
   "include": [
-    "./src"
+    
+    "./src/**/*.ts"
   ],
   "exclude": [
-    "tests/**/*.spec.ts"
+    "tests/**/*.spec.ts",
+    "./src/parser.ts"
   ]
 }

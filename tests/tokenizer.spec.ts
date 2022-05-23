@@ -1,6 +1,6 @@
 import * as logger from './lib/logger';
-import Tokenizer, { Token } from '../src/tokenizer';
-//import { countOfTokensByType, LINE_TESTS, TOKEN_TESTS } from './oldtokenizer-test-def';
+import Tokenizer from '../src/tokenizer';
+import { Token } from '../src/common/token-types';
 import { expect } from 'chai';
 import { TestDefinition as DATES_TEST_DEF } from './plugin-dates-test-def';
 import { TestDefinition as KEYWORDS_TEST_DEF } from './plugin-keywords-test-def';
@@ -130,12 +130,12 @@ describe(`Tests the Tokenizer module.`, function () {
                 // Grab our test expected values
                 const { text, expected } = TOKENS_TEST_DEF.singleTokenTests[testCount];
                 expect(token.value, `Token value at position ${tokenCount} does not match`).to.equal(text)
-                expect(token.type, `Token type at position ${tokenCount} does not match`).to.equal(expected.type);
+                expect(token.subType, `Token type at position ${tokenCount} does not match`).to.equal(expected.type);
                 testCount++;
             } else {
                 // Every other token should be whitespace
                 expect(token.value, `Token value at position ${tokenCount} does not match`).to.equal(' ')
-                expect(token.type, `Token type at position ${tokenCount} does not match`).to.equal('whitespace');
+                expect(token.subType, `Token type at position ${tokenCount} does not match`).to.equal('whitespace');
             }
             tokenCount++;
         }
@@ -161,7 +161,7 @@ describe(`Tests the Tokenizer module.`, function () {
                 const token = tokenizer.getNextToken();
                 debug(token, text);
                 expect(token.value, `token.value`).to.equal(text);
-                expect(token.type, `token.type`).to.equal(expected.type);
+                expect(token.subType, `token.type`).to.equal(expected.type);
             }
         });
 

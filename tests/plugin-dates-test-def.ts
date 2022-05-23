@@ -1,5 +1,5 @@
 import { dates } from '../src/plugins';
-import { Token } from '../src/tokenizer';
+import { Token, TokenSubTypes, TokenTypes } from '../src/common/token-types';
 import { randomItem, Statistics as stats } from './lib/common';
 
 /**
@@ -104,7 +104,7 @@ export const TestDefinition = {
      */
     getStatistics: function (tokens: Token[]) {
         return {
-            "plugin": stats.countOfTokens(tokens, stats.filters.isTokenType('plugin')),
+            "plugin": stats.countOfTokens(tokens, stats.filters.isTokenType(TokenTypes.Plugin)),
             "long-date": stats.countOfTokens(tokens, stats.filters.isPluginType('long-date')),
             "short-date": stats.countOfTokens(tokens, stats.filters.isPluginType('short-date')),
             "iso-date": stats.countOfTokens(tokens, stats.filters.isPluginType('iso-date')),

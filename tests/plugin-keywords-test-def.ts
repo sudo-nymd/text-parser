@@ -1,5 +1,5 @@
 import { Keywords } from '../src/plugins';
-import { Token } from '../src/tokenizer';
+import { Token, TokenSubTypes, TokenTypes } from '../src/common/token-types';
 import { Statistics as stats, randomItem } from './lib/common';
 
 /**
@@ -29,7 +29,8 @@ const Tests = [
         text: `The chinook flew through the sirocco like a 
         zephyr "blowing through the" [canyons]!`,
         expected: {
-            ['phrase']: 2,
+            ['braced-phrase']: 1,
+            ['bracketed-phrase']: 0,
             ['keyword']: 3,
             ['plugin']: 3
         }
@@ -44,7 +45,8 @@ const Tests = [
         expected: {
             ['plugin']: 4,
             ['keyword']: 4,
-            ['phrase']: 1
+            ['bracketed-phrase']: 1,
+            ['braced-phrase']: 0
         }
     }
 ]
@@ -70,8 +72,9 @@ export const TestDefinition = {
      */
     getStatistics: function (tokens: Token[]) {
         return {
-            "phrase": stats.countOfTokens(tokens, stats.filters.isTokenType('phrase')),
-            "plugin": stats.countOfTokens(tokens, stats.filters.isTokenType('plugin')),
+            "braced-phrase": stats.countOfTokens(tokens, stats.filters.isTokenSubType(TokenSubTypes.Braced)),
+            "bracketed-phrase": stats.countOfTokens(tokens, stats.filters.isTokenSubType(TokenSubTypes.Bracketed)),
+            "plugin": stats.countOfTokens(tokens, stats.filters.isTokenType(TokenTypes.Plugin)),
             "keyword": stats.countOfTokens(tokens,stats.filters.isPluginType('keyword'))
         }
     },

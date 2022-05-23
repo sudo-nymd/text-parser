@@ -4,7 +4,8 @@
  * specific keywords.
  */
 
-import { PluginTokenSpec } from "../tokenizer";
+import { PluginTokenRegistryItem } from '../common/token-registry';
+import { TokenTypes } from '../common/token-types';
 
 /**
  * Encapsulates a list of keywords and generates the configuration 
@@ -16,17 +17,17 @@ class Keywords {
     /** The lst of configured keywords. */
     private _keywords: string[];
 
-    /** The token's desired type name. */
-    private _typeName: string;
+    /** The token's desired name. */
+    private _pluginName: string;
 
     /**
      * Creates a new instance of the Keywords class.
-     * @param typeName The token's desired type name. 
+     * @param pluginName The token's desired type name. 
      * @returns The Keywords instance.
      */
-    constructor(typeName: string = 'keyword') {
+    constructor(pluginName: string = 'keyword') {
         this._keywords = [];
-        this._typeName = typeName;
+        this._pluginName = pluginName;
 
         // Support chaining
         return this; 
@@ -52,6 +53,10 @@ class Keywords {
         return this._keywords.length;
     }
 
+    public get pluginName(): string {
+        return this._pluginName;
+    }
+
     /**
      * Generates the required configuration for the Tokenizer to 
      * recognize keywords in a line of text.
@@ -60,12 +65,14 @@ class Keywords {
      * used by the Tokenizer to recognize and extract tokens containing 
      * the keywords.
      */
-    public plugin(): PluginTokenSpec {
+    public plugin(): PluginTokenRegistryItem {
         const pattern = this._formatKeywords()
-        return {
+        const regItem: PluginTokenRegistryItem = {
             pattern: new RegExp(pattern),
-            type: this._typeName
+            type: TokenTypes.Plugin,
+            subType: this._pluginName,
         }
+        return regItem;
     }
 
     /**

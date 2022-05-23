@@ -2,6 +2,7 @@ import { bgBlueBright, blueBright, magentaBright } from 'ansi-colors';
 import { expect } from 'chai';
 import * as logger from './lib/logger';
 import Parser from '../src/parser';
+import { generateTestPhrase, TestDefinition } from './parser-test-def';
 
 const LOGENTRY = logger.create(`START`);
 const log = (msg: string | object) => logger.log(LOGENTRY, msg);
@@ -15,7 +16,32 @@ describe(`Tests the Parser module.`, function () {
         logger.flush(LOGENTRY);
     });
 
-    it(`Tests the Parser module.`, function (done) {
+    it(``, function(done) {
+
+        TestDefinition.tests.forEach(function (test) {
+
+            const fn = (acc, token) => {
+                if(token.type === 'phrase') {
+                    acc += token.open.value + token.value + token.close.value
+                } else {
+                    acc += token.value;
+                }
+                return acc;
+            }
+            const phrase = test.phrase.reduce(fn,'');
+            log(phrase)
+        });
+
+        done();
+    })
+
+    it.skip(`Generates Sample Phrases`, function (done) {
+        const sample = `The quick brown fox jumped over the lazy dog and the cow jumped over the moon`;
+        generateTestPhrase(sample);
+        done();
+    })
+
+    it(`Tests the Parser Module.`, function (done) {
 
         const text = `
         
