@@ -30,7 +30,6 @@ export enum TokenSubTypes {
     Parenthesis = 'parenthesis-phrase',
     Period = 'period',
     SingleQuoted = 'single-quoted-phrase',
-    Unknown = 'unknown',
     Whitespace = 'whitespace',
     Word = 'word',
 }

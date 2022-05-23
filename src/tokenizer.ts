@@ -3,8 +3,6 @@ import { TokenRegistryItem, TokenRegistry, PluginTokenRegistryItem } from "./com
 import { TokenTypes, Token, TokenSubTypes } from "./common/token-types";
 
 const DEBUGGING: boolean = (process.env.DEBUG !== undefined);
-
-
 class Tokenizer {
 
     // 
@@ -15,7 +13,7 @@ class Tokenizer {
 
     private _plugins: PluginTokenRegistryItem[];
 
-    isEOF(): boolean {
+    _EOF(): boolean {
         return this._cursor === this._text.length;
     }
 
@@ -48,7 +46,7 @@ class Tokenizer {
     }
 
     public hasMoretokens(): boolean {
-        return this._cursor < this._text.length;
+        return this._cursor < this._text.length && ! this._EOF();
     }
 
     private _match(spec: TokenRegistryItem, text: string) {
@@ -94,14 +92,7 @@ class Tokenizer {
         }
 
         // If we get to this point, none of our RegEx's picked up a match.
-        // Send it back as 'unknown'.
-        const match = current;
-        this._cursor += match.length;
-        return {
-            subType: TokenSubTypes.Unknown,
-            type: TokenTypes.Standard,
-            value: match
-        }
+        throw new SyntaxError(`Unknown token type: "${current}"`);
     }
 }
 
