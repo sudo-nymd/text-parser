@@ -4,7 +4,7 @@
  * specific keywords.
  */
 
-import { PluginTokenRegistryItem } from '../common/token-registry';
+import { PluginTokenSpec } from '../common/token-specs';
 import { TokenTypes } from '../common/token-types';
 
 /**
@@ -65,9 +65,9 @@ class Keywords {
      * used by the Tokenizer to recognize and extract tokens containing 
      * the keywords.
      */
-    public plugin(): PluginTokenRegistryItem {
+    public plugin(): PluginTokenSpec {
         const pattern = this._formatKeywords()
-        const regItem: PluginTokenRegistryItem = {
+        const regItem: PluginTokenSpec = {
             pattern: new RegExp(pattern),
             type: TokenTypes.Plugin,
             subType: this._pluginName,

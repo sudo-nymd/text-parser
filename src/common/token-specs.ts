@@ -12,33 +12,33 @@ export type TokenTypes = PhraseTokenTypes | WordTokenTypes | 'character' | 'whit
 
 import { PhraseTokenSubTypes, TokenSubTypes, TokenTypes } from "./token-types";
 
-export type TokenRegistryItem = {
+export type TokenSpec = {
     pattern: RegExp;
     subType: TokenSubTypes | string;
     type: TokenTypes;
 }
 
-export type PhraseTokenRegistryItem = TokenRegistryItem & {
+export type PhraseTokenSpec = TokenSpec & {
     subType: PhraseTokenSubTypes;
     type: TokenTypes.Phrase;
     openChar: string;
     closeChar: string;
 }
 
-export type PluginTokenRegistryItem = TokenRegistryItem & {
+export type PluginTokenSpec = TokenSpec & {
     type: TokenTypes.Plugin;
     subType: string;
 }
 
 export const findPhraseByOpenChar = (char: string) => {
-    return TokenRegistry.find((token: PhraseTokenRegistryItem) => {
+    return TokenSpecs.find((token: PhraseTokenSpec) => {
         return (token.type === TokenTypes.Phrase && token.openChar && token.openChar === char)
     });
 }
 
-type RegistryItems = Array<TokenRegistryItem | PhraseTokenRegistryItem>;
+type SpecItems = Array<TokenSpec | PhraseTokenSpec>;
 
-export const TokenRegistry: RegistryItems = [
+export const TokenSpecs: SpecItems = [
     {
         pattern: /^\s+/,
         subType: TokenSubTypes.Whitespace,

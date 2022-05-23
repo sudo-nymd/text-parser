@@ -4,7 +4,7 @@ import { Statistics as stats, randomItem } from './lib/common';
 type SingleTokenTest = {
     text: string,
     expected: {
-        type: TokenSubTypes
+        subType: TokenSubTypes
     }
 }
 
@@ -12,61 +12,61 @@ const SingleTokenTests: SingleTokenTest[] = [
     {
         text: `[brace]`,
         expected: {
-            type: TokenSubTypes.Braced
+            subType: TokenSubTypes.Braced
         }
     },
     {
         text: `{bracket}`,
         expected: {
-            type: TokenSubTypes.Bracketed
+            subType: TokenSubTypes.Bracketed
         }
     },
     {
         text: `{bracket phrase}`,
         expected: {
-            type: TokenSubTypes.Bracketed
+            subType: TokenSubTypes.Bracketed
         }
     },
     {
         text: `[brace phrase]`,
         expected: {
-            type: TokenSubTypes.Braced
+            subType: TokenSubTypes.Braced
         }
     },
     {
         text: `"double quote phrase"`,
         expected: {
-            type: TokenSubTypes.DoubleQuoted
+            subType: TokenSubTypes.DoubleQuoted
         }
     },
     {
         text: `'single quote phrase'`,
         expected: {
-            type: TokenSubTypes.SingleQuoted
+            subType: TokenSubTypes.SingleQuoted
         }
     },
     {
         text: `word`,
         expected: {
-            type: TokenSubTypes.Word
+            subType: TokenSubTypes.Word
         }
     },
     {
         text: `.`,
         expected: {
-            type: TokenSubTypes.Period
+            subType: TokenSubTypes.Period
         }
     },
     {
         text: `,`,
         expected: {
-            type: TokenSubTypes.Comma
+            subType: TokenSubTypes.Comma
         }
     },
     {
         text: `!`,
         expected: {
-            type: TokenSubTypes.ExclamationPoint
+            subType: TokenSubTypes.ExclamationPoint
         }
     }
 ]

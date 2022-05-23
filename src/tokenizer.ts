@@ -1,5 +1,5 @@
 import { config } from "./common/config";
-import { TokenRegistryItem, TokenRegistry, PluginTokenRegistryItem } from "./common/token-registry";
+import { TokenSpec, TokenSpecs, PluginTokenSpec } from "./common/token-registry";
 import { TokenTypes, Token, TokenSubTypes } from "./common/token-types";
 
 const DEBUGGING: boolean = (process.env.DEBUG !== undefined);
@@ -11,7 +11,7 @@ class Tokenizer {
     //
     private _cursor: number;
 
-    private _plugins: PluginTokenRegistryItem[];
+    private _plugins: PluginTokenSpec[];
 
     _EOF(): boolean {
         return this._cursor === this._text.length;
@@ -20,7 +20,7 @@ class Tokenizer {
     /**
      * Initializes the tokenizer.
      */
-    init(text: string, plugins?: TokenRegistryItem[]) {
+    init(text: string, plugins?: TokenSpec[]) {
         // Store for later use.
         this._text = text;
 
@@ -49,7 +49,7 @@ class Tokenizer {
         return this._cursor < this._text.length && ! this._EOF();
     }
 
-    private _match(spec: TokenRegistryItem, text: string) {
+    private _match(spec: TokenSpec, text: string) {
         const { pattern, type, subType } = spec;
         const matched = pattern.exec(text);
         if (matched !== null) {
@@ -86,7 +86,7 @@ class Tokenizer {
             if (token != null) return token as Token;
         }
 
-        for (const spec of TokenRegistry) {
+        for (const spec of TokenSpecs) {
             const token = this._match(spec, current);
             if (token != null) return token as Token;
         }

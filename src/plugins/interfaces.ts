@@ -1,5 +1,5 @@
-import { TokenRegistryItem } from "../common/token-registry";
+import { TokenSpec } from "../common/token-registry";
 
 export interface IPlugin {
-    plugin(): TokenRegistryItem;
+    plugin(): TokenSpec;
 }
