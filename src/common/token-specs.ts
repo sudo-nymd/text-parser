@@ -39,8 +39,19 @@ export const findPhraseByOpenChar = (char: string) => {
 type SpecItems = Array<TokenSpec | PhraseTokenSpec>;
 
 export const TokenPatterns = {
+    [TokenTypes.Apostrophe]: /^'/,
+    [TokenTypes.Braced]: /^\[[^\[]*\]/,
+    [TokenTypes.Bracketed]: /^{[^{]*}/,
+    [TokenTypes.Character]: /^[^\s\w]/, // "'(\[\]{}\.,!
+    [TokenTypes.Comma]: /^,/,
+    [TokenTypes.DoubleQuoted]: /^"[^"]*"/,
+    [TokenTypes.ExclamationPoint]: /^!/,
+    [TokenTypes.Hyphened]: /^[\w]+-[\w]+/,
+    [TokenTypes.Parenthesis]: /^\([^\(]*\)/,
+    [TokenTypes.Period]: /^\./,
+    [TokenTypes.SingleQuoted]: /^'[^']*'/,
     [TokenTypes.Whitespace]: /^\s+/,
-    [TokenTypes.Word]: /^[\w']+/
+    [TokenTypes.Word]: /^[\w']+/,
 }
 
 export const TokenSpecs: SpecItems = [
@@ -50,35 +61,35 @@ export const TokenSpecs: SpecItems = [
         superType: TokenSuperTypes.Standard
     },
     {
-        pattern: /^"[^"]*"/, // /((?<![\\])['"])((?:.(?!(?<![\\])\1))*.?)\1/,  // /"[^"]*"/,
+        pattern: TokenPatterns[TokenTypes.DoubleQuoted], // /((?<![\\])['"])((?:.(?!(?<![\\])\1))*.?)\1/,  // /"[^"]*"/,
         type: TokenTypes.DoubleQuoted,
         superType: TokenSuperTypes.Phrase,
         openChar: `"`,
         closeChar: `"`
     },
     {
-        pattern: /^'[^']*'/,
+        pattern: TokenPatterns[TokenTypes.SingleQuoted],
         type: TokenTypes.SingleQuoted,
         superType: TokenSuperTypes.Phrase,
         openChar: `'`,
         closeChar: `'`
     },
     {
-        pattern: /^{[^{]*}/,
+        pattern: TokenPatterns[TokenTypes.Bracketed],
         type: TokenTypes.Bracketed,
         superType: TokenSuperTypes.Phrase,
         openChar: `{`,
         closeChar: `}`
     },
     {
-        pattern: /^\[[^\[]*\]/,
+        pattern: TokenPatterns[TokenTypes.Braced],
         type: TokenTypes.Braced,
         superType: TokenSuperTypes.Phrase,
         openChar: `[`,
         closeChar: `]`
     },
     {
-        pattern: /^\([^\(]*\)/,
+        pattern: TokenPatterns[TokenTypes.Parenthesis],
         type: TokenTypes.Parenthesis,
         superType: TokenSuperTypes.Phrase,
         openChar: `(`,
@@ -90,32 +101,32 @@ export const TokenSpecs: SpecItems = [
         type: TokenTypes.Word
     },
     {
-        pattern: /^[\w]+-[\w]+/,
+        pattern: TokenPatterns[TokenTypes.Hyphened],
         superType: TokenSuperTypes.Standard,
         type: TokenTypes.Hyphened
     },
     {
-        pattern: /^[^\s\w"'(\[\]{}\.,!]/,
+        pattern: TokenPatterns[TokenTypes.Character],
         superType: TokenSuperTypes.Standard,
         type: TokenTypes.Character
     },
     {
-        pattern: /^\./,
+        pattern: TokenPatterns[TokenTypes.Period],
         superType: TokenSuperTypes.Standard,
         type: TokenTypes.Period
     },
     {
-        pattern: /^,/,
+        pattern: TokenPatterns[TokenTypes.Comma],
         superType: TokenSuperTypes.Standard,
         type: TokenTypes.Comma
     },
     {
-        pattern: /^!/,
+        pattern: TokenPatterns[TokenTypes.ExclamationPoint],
         superType: TokenSuperTypes.Standard,
         type: TokenTypes.ExclamationPoint
     },
     {
-        pattern: /^'/,
+        pattern: TokenPatterns[TokenTypes.Apostrophe],
         superType: TokenSuperTypes.Standard,
         type: TokenTypes.Apostrophe
     }

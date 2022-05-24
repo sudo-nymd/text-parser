@@ -60,19 +60,19 @@ const SingleTokenTests: SingleTokenTest[] = [
     {
         text: `.`,
         expected: {
-            subType: TokenTypes.Period
+            subType: TokenTypes.Character
         }
     },
     {
         text: `,`,
         expected: {
-            subType: TokenTypes.Comma
+            subType: TokenTypes.Character
         }
     },
     {
         text: `!`,
         expected: {
-            subType: TokenTypes.ExclamationPoint
+            subType: TokenTypes.Character
         }
     }
 ]
@@ -82,13 +82,9 @@ const MultipleTokenTests = [
         name: `Tests a Single Line`,
         text: `The quick, brown {fox} jumped [over] the [lazy] dog, and the cow "jumped over" the moon!`,
         expected: {
-            [TokenTypes.Comma]: 2,               // Should detect this many commas
+            [TokenTypes.Character]: 3,               // Should detect this many commas
             [TokenTypes.DoubleQuoted]: 1,        // Should detect this many dbl quote phrases
             [TokenTypes.SingleQuoted]: 0,        // Should detect this many dbl quote phrases
-            [TokenTypes.Period]: 0,              // Should detect this many periods
-            [TokenTypes.ExclamationPoint]: 1,    // Should detect this many exclamation points
-            [TokenTypes.Character]: 0,           // Should detect this many characters
-            //['phrase']: 3,                       // Should detect this many phrases
             [TokenTypes.Word]: 11,               // Should detect this many words
             [TokenTypes.Whitespace]: 14          // Should detect this many words
         }
@@ -108,13 +104,10 @@ export const TestDefinition = {
      */
     getStatistics: function (tokens: Token[]) {
         return {
-            [TokenTypes.Comma]: stats.countOfTokens(tokens, stats.filters.isTokenType(TokenTypes.Comma)),
-            [TokenTypes.Period]: stats.countOfTokens(tokens, stats.filters.isTokenType(TokenTypes.Period)),
             [TokenTypes.DoubleQuoted]: stats.countOfTokens(tokens, stats.filters.isTokenType(TokenTypes.DoubleQuoted)),
             [TokenTypes.SingleQuoted]: stats.countOfTokens(tokens, stats.filters.isTokenType(TokenTypes.SingleQuoted)),
             [TokenTypes.Word]: stats.countOfTokens(tokens, stats.filters.isTokenType(TokenTypes.Word)),
             [TokenTypes.Character]: stats.countOfTokens(tokens, stats.filters.isTokenType(TokenTypes.Character)),
-            [TokenTypes.ExclamationPoint]: stats.countOfTokens(tokens, stats.filters.isTokenType(TokenTypes.ExclamationPoint)),
             [TokenTypes.Whitespace]: stats.countOfTokens(tokens, stats.filters.isTokenType(TokenTypes.Whitespace))
         }
     },
