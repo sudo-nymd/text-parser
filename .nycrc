@@ -3,7 +3,7 @@
     "check-coverage": true,
     "all": true,
     "include": [
-      "tests/**/*.spec.ts"
+      "__tests__/**/*-tests.ts"
     ],
     "exclude": [
       "src/**/*.*"
