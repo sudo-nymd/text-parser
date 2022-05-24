@@ -52,6 +52,12 @@ const SingleTokenTests: SingleTokenTest[] = [
         }
     },
     {
+        text: `dan's`,
+        expected: {
+            subType: TokenTypes.Word
+        }
+    },
+    {
         text: `.`,
         expected: {
             subType: TokenTypes.Period
