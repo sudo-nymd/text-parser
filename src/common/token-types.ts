@@ -17,7 +17,7 @@ export enum TokenSubTypes {
 export type Token = {
     type: TokenTypes;
     value: string;
-    subType: string;
+    [key: string]: string;
 }
 
 export type PhraseToken = {

@@ -21,9 +21,9 @@ describe(`Tests the "${ModuleName}" Module.`, function() {
         
         TokenSpecs.forEach(function(spec) {
             const expected = spec.regex;
-            debug(expected, `expected`)
+            debug(expected, `expected`);
             const actual = getRegExp(spec.type);
-            debug(actual, `${fname1}('${spec.type}')`)
+            debug(actual, `${fname1}('${spec.type}')`);
             expect(actual.source).to.equal(expected.source);
         });
 

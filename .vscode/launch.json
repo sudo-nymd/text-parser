@@ -10,7 +10,7 @@
                 "999999",
                 "--colors",
                 "--config",
-                "${workspaceFolder}/tests/.mocharc.json"
+                "${workspaceFolder}/__tests__/.mocharc.json"
             ],
             "internalConsoleOptions": "openOnSessionStart",
             "name": "Mocha Tests",

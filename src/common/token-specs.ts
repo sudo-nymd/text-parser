@@ -34,7 +34,7 @@ TokenPatterns[TokenTypes.Word] = `^[\w']+`;
 /** Match one or more whitespace characters */
 TokenPatterns[TokenTypes.Whitespace] = `^\s+`;
 /** Match a single character */
-TokenPatterns[TokenTypes.Character] = `^[a-zA-Z0-9]{1}`;
+TokenPatterns[TokenTypes.Character] = `^[^a-zA-Z0-9]{1}`;
 
 /**
  * Looks in the TokenPatterns map for a pattern that matches the 
