@@ -14,7 +14,7 @@ const BAD_WORDS = [
 ]
 
 describe(`Test the token-generator Module.`, function () {
-    it.only(`Tests the Word Generator.`, function (done) {
+    it(`Tests the Word Generator.`, function (done) {
 
         function expected(value: string) {
             return {
