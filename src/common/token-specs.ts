@@ -39,7 +39,8 @@ export const findPhraseByOpenChar = (char: string) => {
 type SpecItems = Array<TokenSpec | PhraseTokenSpec>;
 
 export const TokenPatterns = {
-    [TokenTypes.Whitespace]: /^\s+/
+    [TokenTypes.Whitespace]: /^\s+/,
+    [TokenTypes.Word]: /^[\w']+/
 }
 
 export const TokenSpecs: SpecItems = [
@@ -84,7 +85,7 @@ export const TokenSpecs: SpecItems = [
         closeChar: `)`
     },
     {
-        pattern: /^[\w]+/,
+        pattern: TokenPatterns[TokenTypes.Word],
         superType: TokenSuperTypes.Standard,
         type: TokenTypes.Word
     },
