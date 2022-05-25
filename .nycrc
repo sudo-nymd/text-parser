@@ -3,10 +3,11 @@
     "check-coverage": true,
     "all": true,
     "include": [
-      "__tests__/**/*-tests.ts"
+      
+      "src/**/*.*"
     ],
     "exclude": [
-      "src/**/*.*"
+      
     ],
     "reporter": [
       "html",

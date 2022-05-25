@@ -24,7 +24,7 @@ describe(`Tests the "${ModuleName}" Module.`, function () {
         }
 
         function nullAddMany() {
-            new Keywords().add(null)
+            new Keywords().addMany(null)
         }
 
         function nullInArrayAddMany() {
@@ -32,7 +32,7 @@ describe(`Tests the "${ModuleName}" Module.`, function () {
         }
 
         expect(nullAdd).to.throw(AssertionError);
-        expect(nullAddMany).to.throw(AssertionError);
+        expect(nullAddMany).to.throw(TypeError);
         expect(nullInArrayAddMany).to.throw(AssertionError);
 
         done();
@@ -46,24 +46,31 @@ describe(`Tests the "${ModuleName}" Module.`, function () {
             'gale-force'
         ]
 
+        // Renamed the plugin every test run
+        const PLUGIN_NAME = 'my-keywords-' + Math.random();
+
         const expected = KEYWORDS.map(function(keyword){
             return {
                 type: TokenTypes.Plugin,
                 value: keyword,
-                pluginName: 'keywords'
+                pluginName: PLUGIN_NAME
             }
         })
 
-        const plugin = new Keywords()
-            .addMany(KEYWORDS)
-            .plugin();
+        const keywords = new Keywords(PLUGIN_NAME)
+            .addMany(KEYWORDS);            
+
+        // Check instance properties
+        expect(keywords.count, `keywords.count`).to.equal(KEYWORDS.length);
+        expect(keywords.pluginName, `keywords.pluginName`).to.equal(PLUGIN_NAME)
 
         const tokenizer = new Tokenizer();
-        tokenizer.init(KEYWORDS.join(' '), [plugin]);
+        tokenizer.init(KEYWORDS.join(' '), [keywords.plugin()]);
 
         const actual = [];
         while(tokenizer.hasMoreTokens()) {
             const token = tokenizer.getNextToken();
+            // We only want to capture plugin tokens
             if (token.type === TokenTypes.Plugin) actual.push(token)
         }
 
