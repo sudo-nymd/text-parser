@@ -1,7 +1,7 @@
 {
   "name": "A simple set of words and phrases.",
   "text": "{This} is a [simple] test.",
-  "skip": true,
+  "skip": false,
   "tests": [
     {
       "value": "{This}",
