@@ -53,6 +53,7 @@ class Keywords {
         return this._keywords.length;
     }
 
+    /** Gets the plugin name. */
     public get pluginName(): string {
         return this._pluginName;
     }
