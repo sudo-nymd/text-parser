@@ -21,7 +21,7 @@ describe(`Tests the "${ModuleName}" Module.`, function () {
         logger.flush(LOGENTRY);
     });
 
-    it.only(`Tests`, function (done) {
+    it.only(`Tests Tokenizer Using Files from "./tokenizer-test-data".`, function (done) {
 
         const files = fs.readdirSync(path.join(__dirname, './tokenizer-test-data'));
         
@@ -29,7 +29,7 @@ describe(`Tests the "${ModuleName}" Module.`, function () {
             const { name, text, skip, tests } = require(path.join(__dirname, './tokenizer-test-data', file));
 
             if (skip !== null && skip == false) {
-
+                log(`Running test "${name}" from file "${file}"...`);
                 const results = [];
                 const tokenizer = new Tokenizer();
                 tokenizer.init(text);
@@ -48,7 +48,7 @@ describe(`Tests the "${ModuleName}" Module.`, function () {
                     expect(result.actual).to.have.deep.equal(result.expected);
                 });
             } else {
-                log(`Skipping test ${name}...`);
+                log(`Skipping test "${name}" from file "${file}"...`);
             }
         })
 
