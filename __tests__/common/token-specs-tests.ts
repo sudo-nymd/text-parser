@@ -5,7 +5,7 @@
 
 import * as logger from '../lib/logger';
 import { expect } from 'chai';
-import { getRegExp, TokenSpecs, ModuleName } from '../../src/common/token-specs';
+import { TokenSpecs, ModuleName, getRegExp } from '../../src/common/token-specs';
 
 // "Stateless" logging functions (avoid clashes with Mocha's hijackng of "this")
 const LOGENTRY = logger.create(ModuleName);
