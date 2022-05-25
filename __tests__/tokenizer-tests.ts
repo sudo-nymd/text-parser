@@ -21,7 +21,7 @@ describe(`Tests the "${ModuleName}" Module.`, function () {
         logger.flush(LOGENTRY);
     });
 
-    it.only(`Tests Tokenizer Using Files from "./tokenizer-test-data".`, function (done) {
+    it(`Tests Tokenizer Using Files from "./tokenizer-test-data".`, function (done) {
 
         const files = fs.readdirSync(path.join(__dirname, './tokenizer-test-data'));
         
