@@ -1,7 +1,7 @@
 {
   "name": "Longer Test",
   "text": "The quick, {brown} fox \"jumped over\" the lazy dog, and the 'cow' \"flew over\" the moon! To be, or not to be that is the question; here is another question: Did you {walk} or bring your lunch?",
-  "skip": true,
+  "skip": false,
   "tests": [
     {
       "type": "word",
