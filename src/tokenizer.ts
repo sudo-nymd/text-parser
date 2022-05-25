@@ -83,8 +83,9 @@ export class Tokenizer {
     private _match(spec: AnyTokenSpec, text: string): AnyToken {
         const { regex, type, pluginName } = spec;
         const matched = regex.exec(text);
+        
         if (matched !== null) {
-
+            
             // Grab first match
             const match = matched[0];
 
