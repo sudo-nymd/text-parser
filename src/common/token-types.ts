@@ -45,3 +45,8 @@ export type TokenSpec = {
     regex: RegExp;
 }
 
+export type PluginTokenSpec = TokenSpec & {
+    type: TokenTypes.Plugin;
+    pluginName: string;
+}
+
