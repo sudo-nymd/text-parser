@@ -30,7 +30,7 @@ TokenPatterns[`""`] = `^"[^"]*"`;
 /** Match a single phrase */
 TokenPatterns[TokenTypes.Phrase] = phraseTokenPatterns();
 /** Match a single word */
-TokenPatterns[TokenTypes.Word] = `^([\\w]+[\\w'-]+)`; 
+TokenPatterns[TokenTypes.Word] = `^([\\w]+[\\w'-]*)`; 
 /** Match one or more whitespace characters */
 TokenPatterns[TokenTypes.Whitespace] = `^\\s+`;
 /** Match a single character */
