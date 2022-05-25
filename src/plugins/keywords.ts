@@ -4,7 +4,6 @@
  * specific keywords.
  */
 
-
 import { AssertionError } from 'chai';
 import { PluginTokenSpec, TokenTypes } from '../common/token-types';
 
@@ -106,6 +105,9 @@ class Keywords {
     }
 }
 
+/**
+ * Export the module name for testing
+ */
 const ModuleName = `plugins/keywords`;
 
 export { Keywords, ModuleName }
