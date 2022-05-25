@@ -1,25 +1,67 @@
-import { TokenSpecs } from "./common/token-specs";
-import { Token, TokenSpec, TokenTypes } from "./common/token-types";
+/**
+ * @module tokenizer
+ * @description Provides the implementation of the Tokenizer.
+ */
 
+import { TokenSpecs } from "./common/token-specs";
+import { AnyToken, AnyTokenSpec, PluginToken, PluginTokenSpec, Token, TokenSpec, TokenTypes } from "./common/token-types";
+
+/**
+ * Expose module name for testing.
+ */
 export const ModuleName = 'tokenizer';
 
+/**
+ * Provides a mechanism for Tokenizing an input string using
+ * RegExps defined in TokenSpecs.
+ */
 export class Tokenizer {
+
+    /** Tracks the current position within the input text to tokenize. */
     private _cursor: number;
-    private _text: string;
 
-    init(text: string) {
-        this._text = text;
+    /** The text to tokenize. */
+    private _inputText: string;
+
+    /** Optional array of plugins. */
+    private _plugins: PluginTokenSpec[];
+
+    /**
+     * Initializes (and resets) the Tokenizner class.
+     * @param text The input text to tokenize.
+     * @param plugins Optional array of plugins.
+     */
+    init(text: string, plugins?: PluginTokenSpec[]) {
+        this._inputText = text;
         this._cursor = 0;
+        this._plugins = (plugins != null) ? plugins : [];
     }
 
+    /**
+     * Determines if there are more tokens to process.
+     * @returns TRUE if there are more tokens, FALSE if there are not.
+     */
     hasMoreTokens(): boolean {
-        return this._cursor < this._text.length;
+        return this._cursor < this._inputText.length;
     }
 
+    /**
+     * Gets the next token from the input text.
+     * @returns The next token.
+     */
     getNextToken(): Token {
 
-        const current = this._text.slice(this._cursor);
+        const current = this._inputText.slice(this._cursor);
 
+        // Process plugins first, if any
+        if (this._plugins != null) {
+            for (const spec of this._plugins) {
+                const token = this._match(spec, current);
+                if (token != null) return token as PluginToken;
+            }
+        }
+
+        // Process the rest of the token specifications
         for (const spec of TokenSpecs) {
             const token = this._match(spec, current);
             if (token != null) return token as Token;
@@ -29,26 +71,38 @@ export class Tokenizer {
         throw new SyntaxError(`Could not match token(s) to any known token spec: "${current}"`);
     }
 
-    private _match(spec: TokenSpec, text: string) {
-        const { regex, type } = spec;
+    /**
+     * Runs the RegExp defined in spec against the text 
+     * and returns a token if there is a match.
+     * @param spec Metadata about the token to process, 
+     * including the type and the RegExp to execute agains the input text.
+     * @param text The text to match against. The start character should
+     * match the character at the index of _text specified by the _cursor.
+     * @returns A fresh token, if there is a match.
+     */
+    private _match(spec: AnyTokenSpec, text: string): AnyToken {
+        const { regex, type, pluginName } = spec;
         const matched = regex.exec(text);
         if (matched !== null) {
 
+            // Grab first match
             const match = matched[0];
+
+            // Advance our position within the input text
             this._cursor += match.length;
 
-            if (type === 'plugin') {
+            if (type === 'plugin' && pluginName != undefined) {
+                // We got a plugin
                 return {
-                    //superType: 'plugin',
+                    type: TokenTypes.Plugin,
                     value: match,
-                    type: spec.type
-                }
+                    pluginName: spec.pluginName
+                } as PluginToken;
             } else {
                 return {
-                    //superType: superType,
                     type: type,
                     value: match,
-                }
+                } as AnyToken;
             }
         }
     }

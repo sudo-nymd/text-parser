@@ -20,12 +20,8 @@ export type Token = {
     [key: string]: string;
 }
 
-export type PhraseToken = {
+export type PhraseToken = Token & {
     type: TokenTypes.Phrase;
-}
-
-export type PluginToken = Token & {
-    type: TokenTypes.Plugin;
 }
 
 export type CharacterToken = Token & {
@@ -43,10 +39,20 @@ export type WhitespaceToken = Token & {
 export type TokenSpec = {
     type: TokenTypes;
     regex: RegExp;
+    pluginName?: string;
 }
+
+export type PluginToken = Token & {
+    type: TokenTypes.Plugin;
+    pluginName: string;
+}
+
+export type AnyToken = PluginToken | WordToken | CharacterToken | PhraseToken
 
 export type PluginTokenSpec = TokenSpec & {
     type: TokenTypes.Plugin;
     pluginName: string;
 }
+
+export type AnyTokenSpec = TokenSpec | PluginTokenSpec
 
