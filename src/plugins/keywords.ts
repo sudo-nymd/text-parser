@@ -5,6 +5,7 @@
  */
 
 
+import { AssertionError } from 'chai';
 import { PluginTokenSpec, TokenTypes } from '../common/token-types';
 
 /**
@@ -25,7 +26,7 @@ class Keywords {
      * @param pluginName The token's desired type name. 
      * @returns The Keywords instance.
      */
-    constructor(pluginName: string = 'keyword') {
+    constructor(pluginName: string = 'keywords') {
         this._keywords = [];
         this._pluginName = pluginName;
 
@@ -42,8 +43,22 @@ class Keywords {
      * @memberof Keywords
      */
     public add(keyword: string) {
+        if (keyword == null) {
+            throw new AssertionError(`Keyword should not be null!`);
+        }
+
         this._keywords.push(keyword);
 
+        // Support chaining
+        return this;
+    }
+
+    public addMany(keywords: string[]) {
+        if (keywords != null && Array.isArray(keywords)) {
+            keywords.forEach((keyword) => this.add(keyword));
+        } else {
+            throw new TypeError(`List of keywords should be an array!`)
+        }
         // Support chaining
         return this;
     }
@@ -91,4 +106,6 @@ class Keywords {
     }
 }
 
-export { Keywords }
+const ModuleName = `plugins/keywords`;
+
+export { Keywords, ModuleName }

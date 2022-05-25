@@ -5,7 +5,7 @@ import * as logger from './lib/logger';
 import * as fs from 'fs';
 import path = require('path');
 import { expect } from 'chai';
-import { resourceLimits } from 'worker_threads';
+import { Keywords } from '../src/plugins/keywords';
 
 // "Stateless" logging functions (avoid clashes with Mocha's hijackng of "this")
 const LOGENTRY = logger.create(ModuleName);
@@ -19,6 +19,19 @@ describe(`Tests the "${ModuleName}" Module.`, function () {
     afterEach(() => {
         // Flush logging buffer after every test!
         logger.flush(LOGENTRY);
+    });
+
+    it(`Tests the Keywords Plugin`, function(done) {
+        const KEYWORDS = [
+            'chinook',
+            'sirocco',
+            'zephyr',
+            'gale-force'
+        ]
+
+        const plugin = new Keywords()
+        
+        done();
     });
 
     it(`Tests Tokenizer Using Files from "./tokenizer-test-data".`, function (done) {
