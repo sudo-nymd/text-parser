@@ -11,7 +11,7 @@ const debug = (msg: object, src?: string) => logger.debug(LOGENTRY, msg, src);
 const error = (msg: string | object, src?: string) => logger.error(LOGENTRY, msg, src);
 const warn = (msg: string | object, src?: string) => logger.warn(LOGENTRY, msg, src);
 
-describe.only(`Tests the "${ModuleName}" Module.`, function () {
+describe(`Tests the "${ModuleName}" Module.`, function () {
 
     afterEach(() => {
         // Flush logging buffer after every test!
@@ -38,7 +38,7 @@ describe.only(`Tests the "${ModuleName}" Module.`, function () {
         done();
     })
 
-    it.only(`Tests the Keywords Plugin w/ Tokenizer`, function (done) {
+    it(`Tests the Keywords Plugin w/ Tokenizer`, function (done) {
         const KEYWORDS = [
             'chinook',
             'sirocco',
