@@ -1,3 +1,8 @@
+/** 
+ * TOKEN-SPECS-TESTS
+ * 
+ */
+
 import * as logger from '../lib/logger';
 import { expect } from 'chai';
 import { getRegExp, TokenSpecs, ModuleName } from '../../src/common/token-specs';

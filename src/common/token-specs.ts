@@ -1,13 +1,13 @@
 import { TokenTypes } from "./token-types"
 
 const phraseTokenPatterns = () => {
-    return `(` + [
-        TokenPatterns[`''`],
-        TokenPatterns[`""`],
-        TokenPatterns[`[]`],
-        TokenPatterns[`{}`],
-        TokenPatterns[`()`]
-    ].join(') | (') + `)`;
+    return `^(` + [
+        TokenPatterns[`''`].slice(1),
+        TokenPatterns[`""`].slice(1),
+        TokenPatterns[`[]`].slice(1),
+        TokenPatterns[`{}`].slice(1),
+        TokenPatterns[`()`].slice(1)
+    ].join('|') + ')';
 }
 
 /**
@@ -18,11 +18,11 @@ const phraseTokenPatterns = () => {
  */
 const TokenPatterns = {}
 /** Phrase: Match text between braces */
-TokenPatterns['[]'] = `^\[[^\[]*\]`;
+TokenPatterns['[]'] = `^\\[[^\[]*\\]`;
 /** Phrase: Match text between brackets */
 TokenPatterns['{}'] = `^{[^{]*}`
 /** Phrase: match text between parenthesis */
-TokenPatterns['()'] = `^\([^\(]*\)`;
+TokenPatterns['()'] = `^\\([^\\(]*\\)`;
 /** Phrase: match text between single quotes */
 TokenPatterns[`''`] = `^'[^']*'`;
 /** Phrase: match text between double quotes */
@@ -30,9 +30,9 @@ TokenPatterns[`""`] = `^"[^"]*"`;
 /** Match a single phrase */
 TokenPatterns[TokenTypes.Phrase] = phraseTokenPatterns();
 /** Match a single word */
-TokenPatterns[TokenTypes.Word] = `^[\w']+`;
+TokenPatterns[TokenTypes.Word] = `^([\\w]+[\\w'-]+)`; 
 /** Match one or more whitespace characters */
-TokenPatterns[TokenTypes.Whitespace] = `^\s+`;
+TokenPatterns[TokenTypes.Whitespace] = `^\\s+`;
 /** Match a single character */
 TokenPatterns[TokenTypes.Character] = `^[^a-zA-Z0-9]{1}`;
 

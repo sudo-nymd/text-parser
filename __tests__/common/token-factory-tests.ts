@@ -1,3 +1,8 @@
+/** 
+ * TOKEN-FACTORY-TESTS
+ * 
+ */
+
 import { expect } from 'chai';
 import * as logger from '../lib/logger';
 import * as factory from '../../src/common/token-factory'

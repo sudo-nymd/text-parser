@@ -1,0 +1,116 @@
+{
+  "name": "Wierd Combinations",
+  "skip": false,
+  "text": "test:test this is the phrase; this is after. Wierd: ₩-₩hyphened-word",
+  "tests": [
+    {
+      "type": "word",
+      "value": "test"
+    },
+    {
+      "type": "character",
+      "value": ":"
+    },
+    {
+      "type": "word",
+      "value": "test"
+    },
+    {
+      "type": "whitespace",
+      "value": " "
+    },
+    {
+      "type": "word",
+      "value": "this"
+    },
+    {
+      "type": "whitespace",
+      "value": " "
+    },
+    {
+      "type": "word",
+      "value": "is"
+    },
+    {
+      "type": "whitespace",
+      "value": " "
+    },
+    {
+      "type": "word",
+      "value": "the"
+    },
+    {
+      "type": "whitespace",
+      "value": " "
+    },
+    {
+      "type": "word",
+      "value": "phrase"
+    },
+    {
+      "type": "character",
+      "value": ";"
+    },
+    {
+      "type": "whitespace",
+      "value": " "
+    },
+    {
+      "type": "word",
+      "value": "this"
+    },
+    {
+      "type": "whitespace",
+      "value": " "
+    },
+    {
+      "type": "word",
+      "value": "is"
+    },
+    {
+      "type": "whitespace",
+      "value": " "
+    },
+    {
+      "type": "word",
+      "value": "after"
+    },
+    {
+      "type": "character",
+      "value": "."
+    },
+    {
+      "type": "whitespace",
+      "value": " "
+    },
+    {
+      "type": "word",
+      "value": "Wierd"
+    },
+    {
+      "type": "character",
+      "value": ":"
+    },
+    {
+      "type": "whitespace",
+      "value": " "
+    },
+    {
+      "type": "character",
+      "value": "₩"
+    },
+    {
+      "type": "character",
+      "value": "-"
+    },
+    {
+      "type": "character",
+      "value": "₩"
+    },
+    {
+      "type": "word",
+      "value": "hyphened-word"
+    }
+  ]
+}
+

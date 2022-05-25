@@ -1,0 +1,11 @@
+{
+    "compilerOptions": {
+        "module": "CommonJS",
+        "sourceMap": true,
+        "noImplicitThis": true,
+        "resolveJsonModule": true
+    },
+    "include": [
+        "./**/*.ts"
+    ]
+}

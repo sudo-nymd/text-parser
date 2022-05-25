@@ -1,0 +1,47 @@
+{
+  "name": "A simple set of words and phrases.",
+  "text": "{This} is a [simple] test.",
+  "skip": true,
+  "tests": [
+    {
+      "value": "{This}",
+      "type": "phrase"
+    },
+    {
+      "type": "whitespace",
+      "value": " "
+    },
+    {
+      "value": "is",
+      "type": "word"
+    },
+    {
+      "type": "whitespace",
+      "value": " "
+    },
+    {
+      "value": "a",
+      "type": "word"
+    },
+    {
+      "type": "whitespace",
+      "value": " "
+    },
+    {
+      "type": "phrase",
+      "value": "[simple]"
+    },
+    {
+      "type": "whitespace",
+      "value": " "
+    },
+    {
+      "type": "word",
+      "value": "test"
+    },
+    {
+      "type": "character",
+      "value": "."
+    }
+  ]
+}

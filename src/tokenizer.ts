@@ -1,7 +1,9 @@
 import { TokenSpecs } from "./common/token-specs";
 import { Token, TokenSpec, TokenTypes } from "./common/token-types";
 
-class Tokenizer {
+export const ModuleName = 'tokenizer';
+
+export class Tokenizer {
     private _cursor: number;
     private _text: string;
 
