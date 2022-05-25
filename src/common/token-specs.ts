@@ -1,8 +1,8 @@
-import { GetRegExOptions, getRegExp } from "./token-patterns";
+import { TokenRegExpOptions, getTokenRegExp } from "./token-regexps";
 import { TokenTypes } from "./token-types"
 
-const gre = getRegExp; // Alias
-const greOpts: GetRegExOptions = { matchFromStart: true, flags: '', matchToEnd: false }
+const gre = getTokenRegExp; // Alias
+const greOpts = { matchFromStart: true, flags: '', matchToEnd: false }
 
 const TokenSpecs = [
     { type: TokenTypes.Word, regex: gre(TokenTypes.Word, greOpts) },
@@ -11,6 +11,9 @@ const TokenSpecs = [
     { type: TokenTypes.Character, regex: gre(TokenTypes.Character, greOpts) }
 ]
 
+/**
+ * Expose module name for testing.
+ */
 const ModuleName = `token-specs`;
 
-export { ModuleName, TokenSpecs, GetRegExOptions, getRegExp }
+export { ModuleName, TokenSpecs, TokenRegExpOptions, getTokenRegExp }

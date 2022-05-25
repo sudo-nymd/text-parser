@@ -5,7 +5,7 @@
 
 import * as logger from '../lib/logger';
 import { expect } from 'chai';
-import { TokenSpecs, ModuleName, getRegExp } from '../../src/common/token-specs';
+import { TokenSpecs, ModuleName, getTokenRegExp } from '../../src/common/token-specs';
 
 // "Stateless" logging functions (avoid clashes with Mocha's hijackng of "this")
 const LOGENTRY = logger.create(ModuleName);
@@ -21,20 +21,20 @@ describe(`Tests the "${ModuleName}" Module.`, function() {
         logger.flush(LOGENTRY);
     });
 
-    const fname1 = getRegExp.name;   // Get name of exported function
+    const fname1 = getTokenRegExp.name;   // Get name of exported function
     it(`Tests the {${fname1}()} Function`, function(done) {
         
         TokenSpecs.forEach(function(spec) {
             const expected = spec.regex;
             debug(expected, `expected`);
-            const actual = getRegExp(spec.type);
+            const actual = getTokenRegExp(spec.type);
             debug(actual, `${fname1}('${spec.type}')`);
             expect(actual.source).to.equal(expected.source);
         });
 
         // Send an 'unknown' index to make sure we get the desired exception
         expect(() => {
-            try { getRegExp('foo'); }
+            try { getTokenRegExp('foo'); }
             catch (err) {
                 log(err, `${fname1}('foo')`);
                 throw err;

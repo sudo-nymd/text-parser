@@ -1,5 +1,5 @@
 
-import { getRegExp } from "./token-patterns";
+import { getTokenRegExp } from "./token-regexps";
 import { Token, TokenTypes } from "./token-types";
 
 export const ModuleName = `token-factory`;
@@ -40,7 +40,7 @@ export const whitespace = (count: number = 1): Token => {
 const checkValue = (text: string, type: TokenTypes) => {
     // Grab the pattern from TokenPatterns and "convert" to a 
     // regex that matches the ENTIRE string
-    const re = getRegExp(type, { matchFromStart: true, flags: '', matchToEnd: true });
+    const re = getTokenRegExp(type, { matchFromStart: true, flags: '', matchToEnd: true });
     const matches = text.match(re);
     // Entire string does not match
     if (matches == null) throw new SyntaxError(`Text did not match criteria for type "${type}": "${text}"!`);
