@@ -3,7 +3,7 @@ import { getTokenRegExp, ModuleName } from '../../src/common/token-regexps'
 import { TokenTypes } from '../../src/common/token-types'
 
 describe(`Tests the ${ModuleName} module.`, function() {
-    it.only(`Tests the getTokenRegExp() function.`, function(done) {
+    it(`Tests the getTokenRegExp() function.`, function(done) {
 
         const knownRegExps = [
             TokenTypes.Whitespace, TokenTypes.Word, 
