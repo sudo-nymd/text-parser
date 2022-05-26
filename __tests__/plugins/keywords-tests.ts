@@ -19,19 +19,13 @@ describe(`Tests the "${ModuleName}" Module.`, function () {
     });
 
     it(`Tests that the Keywords add() and addMany() methods throw Errors.`, function(done) {
-        function nullAdd() {
-            new Keywords().add(null)
-        }
+        
 
-        function nullAddMany() {
-            new Keywords().addMany(null)
-        }
+        expect(() => new Keywords().add(null)).to.throw(ReferenceError);
+        expect(() => new Keywords().addMany(null)).to.throw(TypeError);
+        expect(() => new Keywords().addMany([null])).to.throw(ReferenceError);
 
-        function nullInArrayAddMany() {
-            new Keywords().addMany([null])
-        }
-
-
+        // Check returned plugin value
         expect(new Keywords()
             .add('zephyr')
             .add('sirocco')
@@ -40,10 +34,6 @@ describe(`Tests the "${ModuleName}" Module.`, function () {
                 pluginName: 'keywords',
                 regex: /^zephyr|^sirocco/
             })
-
-        expect(nullAdd).to.throw(ReferenceError);
-        expect(nullAddMany).to.throw(TypeError);
-        expect(nullInArrayAddMany).to.throw(ReferenceError);
 
         done();
     })
