@@ -1,20 +1,10 @@
-import { TokenTypes } from "./token-types";
-
 /**
- * Build a RegExp that matches all phrases by OR'ing (using the '|' character) each 
- * pattern together and prefixing with the matchFromStart
- * character (^).
- * @returns A RegExp pattern that will match all phrase patterns.
+ * @module common/token-factory
+ * @description Provides utilties for accessing the various Regular Expressions
+ * that are used by the Tokenizer.
  */
-const phraseTokenRegExes = () => {
-    return `^(` + [
-        TokenRegexps[`''`],
-        TokenRegexps[`""`],
-        TokenRegexps[`[]`],
-        TokenRegexps[`{}`],
-        TokenRegexps[`()`]
-    ].join('|') + ')';
-}
+
+import { TokenTypes } from "./token-types";
 
 /**
  * TokenRegexps
@@ -35,12 +25,12 @@ TokenRegexps[`''`] = `'[^']*'`;
 TokenRegexps[`""`] = `"[^"]*"`;
 
 /** Phrase: match open and close brackets */
-TokenRegexps[`{`] = `^{`;
-TokenRegexps[`}`] = `^}`;
+TokenRegexps[`{`] = `{`;
+TokenRegexps[`}`] = `}`;
 
 /** Phrase: match open and close braces */
-TokenRegexps[`[`] = `^\\[`;
-TokenRegexps[`]`] = `^\\]`;
+TokenRegexps[`[`] = `\\[`;
+TokenRegexps[`]`] = `\\]`;
 
 /** Phrase: match open and close double-quotes */
 TokenRegexps[TokenTypes.DoubleQuote] = `"`;
@@ -107,3 +97,4 @@ export const getTokenRegExp = (key: TokenTypes | string, options?: TokenRegExpOp
     return new RegExp(matchFromStart + pattern + matchToEnd, opts.flags);
 }
 
+export const ModuleName = 'common/token-regexps';
