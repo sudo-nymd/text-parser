@@ -21,6 +21,39 @@ describe(`Tests the "${ModuleName}" Module.`, function () {
         logger.flush(LOGENTRY);
     });
 
+    it(`Tests the init() method.`, function(done) {
+
+        // NULL text should throw
+        expect(() => {
+            new Tokenizer().init(null);
+        }).to.throw(ReferenceError);
+
+        // NULL plugin spec should throw
+        expect(() => {
+            new Tokenizer().init('test', [null]);
+        }).to.throw(ReferenceError);
+
+        // Invalid plugin name should throw
+        expect(() => {
+            // @ts-ignore
+            new Tokenizer().init('test', [{ type: TokenTypes.Word, pluginName: 'test', regex: /.*/g }]);
+        }, 'invalid plugin type').to.throw(/plugin type/i);
+
+        // Null plugin regex should throw
+        expect(() => {
+            // @ts-ignore
+            new Tokenizer().init('test', [{ type: TokenTypes.Plugin, pluginName: 'test' }]);
+        }, 'invalid plugin regex').to.throw(/plugin regex/i);
+
+        // Invalid plugin regex should throw
+        expect(() => {
+            // @ts-ignore
+            new Tokenizer().init('test', [{ type: TokenTypes.Plugin, pluginName: 'test', regex: {} }]);
+        }, 'invalid plugin regex').to.throw(/plugin regex/i);
+
+        done();
+    })
+
     it(`Tests the Keywords Plugin`, function(done) {
         const KEYWORDS = [
             'chinook',

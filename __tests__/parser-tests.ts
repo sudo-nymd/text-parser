@@ -36,33 +36,6 @@ describe(`Tests the "${ModuleName}" Module.`, function () {
 
     it(`Tests the Parser.use() method.`, function (done) {
 
-        // NULL plugin spec should throw
-        expect(() => {
-            new Parser().use(null);
-        }).to.throw(ReferenceError);
-
-        // Incomplete plugin spec should throw
-        expect(() => {
-            // @ts-ignore
-            new Parser().use({});
-        }).to.throw(TypeError);
-
-        // Incomplete plugin spec should throw
-        expect(() => {
-            // @ts-ignore
-            new Parser().use({ type: TokenTypes.Character });
-        }).to.throw(TypeError);
-
-        // Wrong plugin type should throw
-        expect(() => {
-            new Parser().use({
-                //@ts-ignore
-                type: TokenTypes.Character,
-                pluginName: 'test-plugin',
-                regex: /.*/g
-            });
-        }).to.throw(TypeError);           
-
         const parser = new Parser();
         const actual = parser.use(
             new Keywords()
