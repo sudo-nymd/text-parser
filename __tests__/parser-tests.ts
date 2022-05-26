@@ -22,6 +22,11 @@ describe(`Tests the "${ModuleName}" Module.`, function () {
     it(`Tests the Parser.parse() method`, function(done) {
 
         const parser = new Parser();
+
+        // @ts-ignore
+        expect(() => parser.parse(null), 'null text arg').to.throw(ReferenceError);
+        expect(() => parser.parse(''), 'empty text arg').to.throw(ReferenceError);
+
         const parsed = parser.parse(
         `
         This is "in quotes".
@@ -36,13 +41,16 @@ describe(`Tests the "${ModuleName}" Module.`, function () {
 
     it(`Tests the Parser.use() method.`, function (done) {
 
-        const parser = new Parser();
-        const actual = parser.use(
+        expect(() => new Parser().use(null)).to.throw(ReferenceError);
+
+        const actual = new Parser()
+            .use(
             new Keywords()
                 .add('zephyr')
-                .add('sirocco')
+                .add('sirrocco')
                 .plugin()
-            );
+            )
+            .parse('the zephyr turned into a sirrocco')
         
         debug(actual);
         done();
