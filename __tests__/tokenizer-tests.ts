@@ -6,6 +6,7 @@ import * as fs from 'fs';
 import path = require('path');
 import { expect } from 'chai';
 import { Keywords } from '../src/plugins/keywords';
+import { argv } from 'process';
 
 // "Stateless" logging functions (avoid clashes with Mocha's hijackng of "this")
 const LOGENTRY = logger.create(ModuleName);
@@ -101,13 +102,13 @@ describe(`Tests the "${ModuleName}" Module.`, function () {
         done();
     });
 
-    it.skip(`Generates Test Data Using Brute Force`, function (done) {
+    it.only(`Generates Tokenizer Test Data.`, function (done) {
         const expected = []
 
-        const text = `test test this is the phrase; this is after. Wierd: ₩-₩hyphened-word`
+        const text = `{test} "test" this is the phrase; this is after.`
         //const text = `This is a [simple] test.`
 
-        text.split(/\s(?=(?:"[^"]*"|[^"])*$)/g).forEach(function (item, index, arr) {
+        text.split(' ').forEach(function (item, index, arr) {
             if (item.endsWith(',')) {
                 // COMMA
                 expected.push(factory.word(item.slice(0, -1)));

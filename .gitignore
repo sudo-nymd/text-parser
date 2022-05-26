@@ -41,3 +41,5 @@ out
 
 # ignore yarn.lock
 yarn.lock
+
+__tests__/.bin/*.json
