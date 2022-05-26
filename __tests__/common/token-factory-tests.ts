@@ -108,6 +108,10 @@ describe(`Test the ${factory.ModuleName} Module.`, function () {
             expect(ws).to.have.deep.equals(expected(count));
         }
 
+        // Test the default - should return one space in
+        // the token's value
+        expect(factory.whitespace()).to.deep.equal(expected(1));
+
 
         done();
     })
