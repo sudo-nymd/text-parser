@@ -12,21 +12,6 @@ import { CharacterToken, PhraseToken, TokenTypes, WhitespaceToken, WordToken } f
 export const ModuleName = `token-factory`;
 
 /**
- * Creates an instance of a PhraseToken
- * @param char The phrase text for the token.
- * @returns A fresh token.
- */
-export const phrase = (phrase: string): PhraseToken => {
-    // TODO Need to get this to work!!!
-    //checkValue(phrase, TokenTypes.Phrase);
-
-    return {
-        type: TokenTypes.Phrase,
-        value: phrase
-    }
-}
-
-/**
  * Creates an instance of a CharacterToken.
  * @param char The char text for the token.
  * @returns A fresh token.
