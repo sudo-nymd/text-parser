@@ -71,7 +71,7 @@ describe(`Tests the "${ModuleName}" Module.`, function () {
     it.skip(`Generates Test Data Using Brute Force`, function (done) {
         const expected = []
 
-        const text = `test:test this is the phrase; this is after.`;
+        const text = `test test this is the phrase; this is after. Wierd: ₩-₩hyphened-word`
         //const text = `This is a [simple] test.`
 
         text.split(/\s(?=(?:"[^"]*"|[^"])*$)/g).forEach(function (item, index, arr) {
@@ -102,19 +102,27 @@ describe(`Tests the "${ModuleName}" Module.`, function () {
                 expected.push(factory.character(':'));
             } else if (item.startsWith(`{`) && item.endsWith('}')) {
                 // BRACKET PHRASE
-                expected.push(factory.phrase(item));
+                expected.push({ type: `{`, value: `{`});
+                expected.push(factory.word(item.slice(1, -1)));
+                expected.push({ type: `}`, value: `}` });
             } else if (item.startsWith(`[`) && item.endsWith(']')) {
                 // BRACE PHRASE
-                expected.push(factory.phrase(item));
+                expected.push({ type: `[`, value: `[` });
+                expected.push(factory.word(item.slice(1, -1)));
+                expected.push({ type: `]`, value: `]` });
             } else if (item.startsWith(`(`) && item.endsWith(')')) {
                 // PARENTHESIS PHRASE
-                expected.push(factory.phrase(item));
+                expected.push(factory.word(item));
             } else if (item.startsWith(`"`) && item.endsWith('"')) {
                 // DOUBLE QUOTE PHRASE
-                expected.push(factory.phrase(item));
+                expected.push({ type: `"`, value: `"` });
+                expected.push(factory.word(item.slice(1, -1)));
+                expected.push({ type: `"`, value: `"` });
             } else if (item.startsWith(`'`) && item.endsWith(`'`)) {
                 // SINGLE QUOTE PHRASE
-                expected.push(factory.phrase(item));
+                expected.push({ type: `'`, value: `'` });
+                expected.push(factory.word(item.slice(1, -1)));
+                expected.push({ type: `'`, value: `'` });
             }
             else {
                 expected.push(factory.word(item));

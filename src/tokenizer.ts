@@ -3,6 +3,7 @@
  * @description Provides the implementation of the Tokenizer.
  */
 
+import { text } from "stream/consumers";
 import { TokenSpecs } from "./common/token-specs";
 import { AnyToken, AnyTokenSpec, PluginToken, PluginTokenSpec, Token, TokenSpec, TokenTypes } from "./common/token-types";
 
@@ -50,6 +51,10 @@ export class Tokenizer {
      * @returns The next token.
      */
     getNextToken(): Token {
+
+        if (!this.hasMoreTokens()) {
+            return null;
+        }
 
         const current = this._inputText.slice(this._cursor);
 

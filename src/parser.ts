@@ -1,0 +1,178 @@
+import { Phrase } from "./common/token-specs";
+import { CharacterToken, PluginTokenSpec, TokenTypes, WhitespaceToken, WordToken } from "./common/token-types";
+import { Token } from "./common/token-types";
+import { Tokenizer } from "./tokenizer";
+
+export class Parser {
+
+    private _plugins: PluginTokenSpec[];
+    private _tokenizer: Tokenizer;
+    private _lookahead: Token;
+
+    constructor() {
+        /** The list of plugins to be used during parsing. */
+        this._plugins = [];
+
+        /** The internal Tokenizer. */
+        this._tokenizer = new Tokenizer();
+    }
+
+    /**
+     * Adds the plugin to the internal plugins list, which will make the
+     * plugin available during parsing.
+     * @param plugin The plugin to use.
+     * @returns A reference to the current Parser instance (allows
+     * for function chaining).
+     */
+    use(plugin: PluginTokenSpec) {
+        // If plugin passes muster, add to plugins array
+        this._validateUse(plugin);
+        this._plugins.push(plugin);
+
+        // Allow function chaining
+        return this;
+    }
+
+    parse(text: string) {
+        if (text === null || text.trim().length == 0) throw new ReferenceError(`Text cannot be NULL or EMPTY!`);
+
+        this._tokenizer.init(text, this._plugins);
+        this._lookahead = this._tokenizer.getNextToken();
+
+        return this._literals();
+    }
+
+    _literals(stopLookahead = null): Token[] {
+        const items = [this._literal()];
+
+        while (this._lookahead != null && this._lookahead.type !== stopLookahead) {
+            items.push(this._literal());
+        }
+        return items;
+    }
+
+    _literal(): Token {
+        const type: string = this._lookahead.type;
+        switch (type) {
+
+            case TokenTypes.Character:
+                return this._character();
+
+            case TokenTypes.BraceOpen:
+            case TokenTypes.BracketOpen:
+            case TokenTypes.SingleQuote:
+            case TokenTypes.DoubleQuote:
+                return this._phrase();
+
+            case TokenTypes.Plugin:
+                return this._plugin();
+
+            case TokenTypes.Whitespace:
+                return this._whitespace();
+
+            case TokenTypes.Word:
+                return this._word();
+        }
+    }
+
+    _character() {
+        return this._eat(TokenTypes.Character);
+    }
+
+    _phrase() {
+
+        const reducer = (initialValue, token) => {
+            return initialValue += token.value;
+        }
+
+        const startChar = this._startChar();
+        const items = this._phraseItems(startChar.value);
+        const value = items.reduce(reducer, '');
+        const stopChar = this._stopChar()
+
+        return {
+            type: TokenTypes.Phrase,
+            startChar,
+            items,
+            value,
+            stopChar
+        } as PhraseToken
+    }
+
+    _phraseItems(startChar) {
+        let stopChar = Phrase.getMatchingType(startChar);        
+        return this._lookahead.type !== startChar ? this._literals(stopChar) : [];
+    }
+
+    _startChar(): CharacterToken {
+        return {
+            type: TokenTypes.Character,
+            value: this._eat(this._lookahead.type).value
+        }
+    }
+
+    _stopChar(): CharacterToken {
+        return {
+            type: TokenTypes.Character,
+            value: this._eat(this._lookahead.type).value
+        }
+    }
+
+    _plugin() {
+        return this._eat(TokenTypes.Plugin);
+    }
+
+    _whitespace() {
+        return this._eat(TokenTypes.Whitespace);
+    }
+
+    _word() {
+        return this._eat(TokenTypes.Word);
+    }
+
+    _eat(type: TokenTypes | string) {
+
+        const token = this._lookahead;
+
+        if (token == null) {
+            throw new SyntaxError(`Unexpected end of input, expected: "${type}"!`)
+        }
+
+        if (token.type !== type) {
+            throw new SyntaxError(`Unexpected token: "${token.value}", expected "${type}!"`);
+        }
+
+        // Advance to the next token
+        this._lookahead = this._tokenizer.getNextToken();
+
+        return token;
+    }
+
+    /**
+     * Validates the inputs for the use() method.
+     * @param plugin The plugin to validate.
+     */
+    private _validateUse(plugin: PluginTokenSpec) {
+        if (plugin === null)
+            throw new ReferenceError(`Plugin cannot be null!`);
+
+        if (plugin.pluginName === undefined
+            || plugin.regex === undefined
+            || plugin.type === undefined)
+            throw new TypeError(`Plugin does not have required properties!`);
+
+        if (plugin.type !== TokenTypes.Plugin)
+            throw new TypeError(`Plugin.type must equal 'plugin'!`);
+    }
+}
+
+export type PhraseToken = Token & {
+    startChar: CharacterToken;
+    stopChar: CharacterToken;
+    items: Array<WordToken | WhitespaceToken | CharacterToken>;
+}
+
+/**
+ * Expose module name for testing.
+ */
+export const ModuleName = 'parser';

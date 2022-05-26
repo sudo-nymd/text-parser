@@ -33,14 +33,27 @@ TokenRegexps['()'] = `\\([^\\(]*\\)`;
 TokenRegexps[`''`] = `'[^']*'`;
 /** Phrase: match text between double quotes */
 TokenRegexps[`""`] = `"[^"]*"`;
-/** Match a single phrase */
-TokenRegexps[TokenTypes.Phrase] = phraseTokenRegExes();
+
+/** Phrase: match open and close brackets */
+TokenRegexps[`{`] = `^{`;
+TokenRegexps[`}`] = `^}`;
+
+/** Phrase: match open and close braces */
+TokenRegexps[`[`] = `^\\[`;
+TokenRegexps[`]`] = `^\\]`;
+
+/** Phrase: match open and close double-quotes */
+TokenRegexps[TokenTypes.DoubleQuote] = `"`;
+
+/** Phrase: match open and close double-quotes */
+TokenRegexps[TokenTypes.SingleQuote] = `'`;
+
 /** Match a single word */
 TokenRegexps[TokenTypes.Word] = `([\\w]+[\\w'-]*)`;
 /** Match one or more whitespace characters */
 TokenRegexps[TokenTypes.Whitespace] = `\\s+`;
 /** Match a single character */
-TokenRegexps[TokenTypes.Character] = `[^a-zA-Z0-9]{1}`;
+TokenRegexps[TokenTypes.Character] = `[^a-zA-Z0-9{}\\[\\]"']{1}`;
 
 export type TokenRegExpOptions = {
     /**

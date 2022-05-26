@@ -2,6 +2,12 @@
 export enum TokenTypes {
     Character = 'character',
     Phrase = 'phrase',
+    BracketOpen = '{',
+    BracketClose = '}',
+    BraceOpen = `[`,
+    BraceClose = `]`,
+    DoubleQuote = `"`,
+    SingleQuote = `'`,
     Whitespace = 'whitespace',
     Word = 'word',
     Plugin = 'plugin'
@@ -19,6 +25,11 @@ export type Token = {
     value: string;
     [key: string]: string;
 }
+
+export type PhraseOpenTokenTypes = TokenTypes.BraceOpen | TokenTypes.BracketOpen | TokenTypes.DoubleQuote | TokenTypes.SingleQuote
+export type PhraseCloseTokenTypes = TokenTypes.BraceClose | TokenTypes.BracketClose | TokenTypes.DoubleQuote | TokenTypes.SingleQuote
+export type PhraseTokenTypes = PhraseCloseTokenTypes | PhraseOpenTokenTypes;
+
 
 export type PhraseToken = Token & {
     type: TokenTypes.Phrase;

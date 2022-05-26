@@ -1,35 +1,11 @@
 {
-  "name": "A simple set of words and phrases.",
-  "text": "{This} is a [simple] test.",
+  "name": "TEST_NAME",
   "skip": false,
+  "text": "This is a [test] a \"really\" \"simple\" {test}",
   "tests": [
     {
-      "value": "{This}",
-      "type": "phrase"
-    },
-    {
-      "type": "whitespace",
-      "value": " "
-    },
-    {
-      "value": "is",
-      "type": "word"
-    },
-    {
-      "type": "whitespace",
-      "value": " "
-    },
-    {
-      "value": "a",
-      "type": "word"
-    },
-    {
-      "type": "whitespace",
-      "value": " "
-    },
-    {
-      "type": "phrase",
-      "value": "[simple]"
+      "type": "word",
+      "value": "This"
     },
     {
       "type": "whitespace",
@@ -37,11 +13,87 @@
     },
     {
       "type": "word",
+      "value": "is"
+    },
+    {
+      "type": "whitespace",
+      "value": " "
+    },
+    {
+      "type": "word",
+      "value": "a"
+    },
+    {
+      "type": "whitespace",
+      "value": " "
+    },
+    {
+      "type": "[",
+      "value": "["
+    },
+    {
+      "type": "word",
       "value": "test"
     },
     {
-      "type": "character",
-      "value": "."
+      "type": "]",
+      "value": "]"
+    },
+    {
+      "type": "whitespace",
+      "value": " "
+    },
+    {
+      "type": "word",
+      "value": "a"
+    },
+    {
+      "type": "whitespace",
+      "value": " "
+    },
+    {
+      "type": "\"",
+      "value": "\""
+    },
+    {
+      "type": "word",
+      "value": "really"
+    },
+    {
+      "type": "\"",
+      "value": "\""
+    },
+    {
+      "type": "whitespace",
+      "value": " "
+    },
+    {
+      "type": "\"",
+      "value": "\""
+    },
+    {
+      "type": "word",
+      "value": "simple"
+    },
+    {
+      "type": "\"",
+      "value": "\""
+    },
+    {
+      "type": "whitespace",
+      "value": " "
+    },
+    {
+      "type": "{",
+      "value": "{"
+    },
+    {
+      "type": "word",
+      "value": "test"
+    },
+    {
+      "type": "}",
+      "value": "}"
     }
   ]
 }
