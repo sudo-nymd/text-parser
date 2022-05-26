@@ -102,7 +102,7 @@ describe(`Tests the "${ModuleName}" Module.`, function () {
         done();
     });
 
-    it.only(`Generates Tokenizer Test Data.`, function (done) {
+    it.skip(`Generates Tokenizer Test Data.`, function (done) {
         const expected = []
 
         const text = `{test} "test" this is the phrase; this is after.`
