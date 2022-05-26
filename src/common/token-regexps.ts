@@ -1,5 +1,5 @@
 /**
- * @module common/token-factory
+ * @module common/token-regexps
  * @description Provides utilties for accessing the various Regular Expressions
  * that are used by the Tokenizer.
  */
@@ -12,38 +12,38 @@ import { TokenTypes } from "./token-types";
  * @description Map of token regex patterns which allows the 
  * pattern to be looked up by index.
  */
-const TokenRegexps = {}
+const TokenRegExps = {}
 /** Phrase: Match text between braces */
-TokenRegexps['[]'] = `\\[[^\[]*\\]`;
+TokenRegExps['[]'] = `\\[[^\[]*\\]`;
 /** Phrase: Match text between brackets */
-TokenRegexps['{}'] = `{[^{]*}`
+TokenRegExps['{}'] = `{[^{]*}`
 /** Phrase: match text between parenthesis */
-TokenRegexps['()'] = `\\([^\\(]*\\)`;
+TokenRegExps['()'] = `\\([^\\(]*\\)`;
 /** Phrase: match text between single quotes */
-TokenRegexps[`''`] = `'[^']*'`;
+TokenRegExps[`''`] = `'[^']*'`;
 /** Phrase: match text between double quotes */
-TokenRegexps[`""`] = `"[^"]*"`;
+TokenRegExps[`""`] = `"[^"]*"`;
 
 /** Phrase: match open and close brackets */
-TokenRegexps[`{`] = `{`;
-TokenRegexps[`}`] = `}`;
+TokenRegExps[`{`] = `{`;
+TokenRegExps[`}`] = `}`;
 
 /** Phrase: match open and close braces */
-TokenRegexps[`[`] = `\\[`;
-TokenRegexps[`]`] = `\\]`;
+TokenRegExps[`[`] = `\\[`;
+TokenRegExps[`]`] = `\\]`;
 
 /** Phrase: match open and close double-quotes */
-TokenRegexps[TokenTypes.DoubleQuote] = `"`;
+TokenRegExps[TokenTypes.DoubleQuote] = `"`;
 
 /** Phrase: match open and close double-quotes */
-TokenRegexps[TokenTypes.SingleQuote] = `'`;
+TokenRegExps[TokenTypes.SingleQuote] = `'`;
 
 /** Match a single word */
-TokenRegexps[TokenTypes.Word] = `([\\w]+[\\w'-]*)`;
+TokenRegExps[TokenTypes.Word] = `([\\w]+[\\w'-]*)`;
 /** Match one or more whitespace characters */
-TokenRegexps[TokenTypes.Whitespace] = `\\s+`;
+TokenRegExps[TokenTypes.Whitespace] = `\\s+`;
 /** Match a single character */
-TokenRegexps[TokenTypes.Character] = `[^a-zA-Z0-9{}\\[\\]"']{1}`;
+TokenRegExps[TokenTypes.Character] = `[^a-zA-Z0-9{}\\[\\]"']{1}`;
 
 export type TokenRegExpOptions = {
     /**
@@ -65,7 +65,7 @@ export type TokenRegExpOptions = {
 }
 
 /**
- * Looks in the TokenPatterns map for a pattern that matches the 
+ * Looks in the TokenRegExps map for a pattern that matches the 
  * specified key and returns a new RegExp instance if found.
  * @param key The key used to lookup the pattern in  the TokenPatterns map.
  * @param options Options for retrieving the specified RegEx.
@@ -88,7 +88,7 @@ export const getTokenRegExp = (key: TokenTypes | string, options?: TokenRegExpOp
     const matchToEnd = (opts.matchToEnd) ? '$' : '';
 
     // Find the RegExp pattern, and throw if we don't find it.
-    const pattern = TokenRegexps[key];
+    const pattern = TokenRegExps[key];
     if (pattern == null || pattern == undefined) {
         throw new RangeError(`The specified pattern for key "${key}" was not found!`);
     }
