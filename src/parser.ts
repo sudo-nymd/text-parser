@@ -1,6 +1,7 @@
 import { Phrase } from "./common/token-specs";
 import { CharacterToken, PluginTokenSpec, TokenTypes, WhitespaceToken, WordToken } from "./common/token-types";
 import { Token } from "./common/token-types";
+import { validatePlugin } from "./plugins/common";
 import { Tokenizer } from "./tokenizer";
 
 export class Parser {
@@ -26,8 +27,7 @@ export class Parser {
      */
     use(plugin: PluginTokenSpec) {
         // If plugin passes muster, add to plugins array
-        this._validateUse(plugin);
-        this._plugins.push(plugin);
+        this._plugins.push(validatePlugin(plugin));
 
         // Allow function chaining
         return this;
@@ -146,23 +146,6 @@ export class Parser {
         this._lookahead = this._tokenizer.getNextToken();
 
         return token;
-    }
-
-    /**
-     * Validates the inputs for the use() method.
-     * @param plugin The plugin to validate.
-     */
-    private _validateUse(plugin: PluginTokenSpec) {
-        if (plugin === null)
-            throw new ReferenceError(`Plugin cannot be null!`);
-
-        if (plugin.pluginName === undefined
-            || plugin.regex === undefined
-            || plugin.type === undefined)
-            throw new TypeError(`Plugin does not have required properties!`);
-
-        if (plugin.type !== TokenTypes.Plugin)
-            throw new TypeError(`Plugin.type must equal 'plugin'!`);
     }
 }
 

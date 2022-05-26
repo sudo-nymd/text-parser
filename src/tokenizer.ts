@@ -6,6 +6,7 @@
 import { text } from "stream/consumers";
 import { TokenSpecs } from "./common/token-specs";
 import { AnyToken, AnyTokenSpec, PluginToken, PluginTokenSpec, Token, TokenSpec, TokenTypes } from "./common/token-types";
+import { validatePlugins } from "./plugins/common";
 
 /**
  * Expose module name for testing.
@@ -33,9 +34,13 @@ export class Tokenizer {
      * @param plugins Optional array of plugins.
      */
     init(text: string, plugins?: PluginTokenSpec[]) {
+        if (text == null) {
+            throw new ReferenceError('Text should not be null!');
+        }
+        
         this._inputText = text;
         this._cursor = 0;
-        this._plugins = (plugins != null) ? plugins : [];
+        this._plugins = (plugins != null) ? validatePlugins(plugins) : [];
     }
 
     /**
