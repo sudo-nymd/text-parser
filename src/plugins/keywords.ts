@@ -43,7 +43,7 @@ class Keywords {
      */
     public add(keyword: string) {
         if (keyword == null) {
-            throw new AssertionError(`Keyword should not be null!`);
+            throw new ReferenceError(`Keyword should not be null!`);
         }
 
         this._keywords.push(keyword);

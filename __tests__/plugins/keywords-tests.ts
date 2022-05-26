@@ -31,9 +31,19 @@ describe(`Tests the "${ModuleName}" Module.`, function () {
             new Keywords().addMany([null])
         }
 
-        expect(nullAdd).to.throw(AssertionError);
+
+        expect(new Keywords()
+            .add('zephyr')
+            .add('sirocco')
+            .plugin()).to.have.deep.equal({
+                type: TokenTypes.Plugin,
+                pluginName: 'keywords',
+                regex: /^zephyr|^sirocco/
+            })
+
+        expect(nullAdd).to.throw(ReferenceError);
         expect(nullAddMany).to.throw(TypeError);
-        expect(nullInArrayAddMany).to.throw(AssertionError);
+        expect(nullInArrayAddMany).to.throw(ReferenceError);
 
         done();
     })
