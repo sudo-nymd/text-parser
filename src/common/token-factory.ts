@@ -1,10 +1,11 @@
+
 /**
  * @module common/token-factory
  * @description Provides the implementation of the TokenFactory.
  */
 
-import { getTokenRegExp } from "./token-regexps";
-import { CharacterToken, PhraseToken, TokenTypes, WhitespaceToken, WordToken } from "./token-types";
+import { CharacterToken, TokenTypes, WhitespaceToken, WordToken } from './token-types';
+import { getTokenRegExp } from './token-regexps';
 
 /**
  * Expose module name for testing.
