@@ -5,7 +5,8 @@
 
 import * as logger from '../lib/logger';
 import { expect } from 'chai';
-import { TokenSpecs, ModuleName, getTokenRegExp } from '../../src/common/token-specs';
+import { TokenSpecs, ModuleName, getTokenRegExp, Phrase } from '../../src/common/token-specs';
+import { TokenTypes } from '../../src/common/token-types';
 
 // "Stateless" logging functions (avoid clashes with Mocha's hijackng of "this")
 const LOGENTRY = logger.create(ModuleName);
@@ -20,6 +21,18 @@ describe(`Tests the "${ModuleName}" Module.`, function() {
         // Flush logging buffer after every test!
         logger.flush(LOGENTRY);
     });
+
+    it(`Tests the Phrase.getMatchingType() function.`, function(done) {
+        
+        expect(Phrase.getMatchingType(TokenTypes.BraceClose)).to.equal(TokenTypes.BraceOpen);
+        expect(Phrase.getMatchingType(TokenTypes.BraceOpen)).to.equal(TokenTypes.BraceClose);
+        expect(Phrase.getMatchingType(TokenTypes.BracketClose)).to.equal(TokenTypes.BracketOpen);
+        expect(Phrase.getMatchingType(TokenTypes.BracketOpen)).to.equal(TokenTypes.BracketClose);
+        expect(Phrase.getMatchingType(TokenTypes.SingleQuote)).to.equal(TokenTypes.SingleQuote);
+        expect(Phrase.getMatchingType(TokenTypes.DoubleQuote)).to.equal(TokenTypes.DoubleQuote);
+
+        done();
+    })
 
     const fname1 = getTokenRegExp.name;   // Get name of exported function
     it(`Tests the {${fname1}()} Function`, function(done) {
