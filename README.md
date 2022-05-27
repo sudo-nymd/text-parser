@@ -1,6 +1,6 @@
-# TEXT-PARSER
+# A Simple Parser of Text
 
-A simple, yet flexible library for extracting specialized tokens out of text.
+A simple, yet flexible library for extracting specialized tokens out of text. After maintaining a library of Regular Expressions for years, I was inspired to build a number of parsers after taking [Dmitry Soshnikov's](http://dmitrysoshnikov.com/) excellent Udemy course [Building a Parser from Scratch](https://www.udemy.com/course/parser-from-scratch/).
 
 # Getting Started
 
@@ -8,16 +8,44 @@ A simple, yet flexible library for extracting specialized tokens out of text.
 ```
 npm i @sudo-nymd/text-parser
 ```
+## The Parser
 
-## Using the Library
+The ```Parser``` is the root of the API. The Parser implemented a ```parse()``` method that will return parsed tokens with metadata about the text found.
 
-```COMING SOON```
+The following code...
 
-## Parser
+``` javascript
+const { Parser } = require('@sudo-nymd/text-parser');
 
-```COMING SOON```
+const text = `Sudo-Nymd's "text-parser"!`
+const parsed = new Parser().parse(text);
+console.log(parsed);
+```
+... produces the following output:
 
-## Tokenizer
+``` javascript
+[
+  { type: 'word', flags: 48, value: "Sudo-Nymd's" },
+  { type: 'whitespace', flags: 0, value: ' ' },
+  {
+    type: 'phrase',
+    flags: 3,
+    startChar: { type: 'character', value: '"' },
+    items: [
+            {
+                "type": "word",
+                "flags": 32,
+                "value": "text-parser"
+            }
+        ],
+    value: 'text-parser',
+    stopChar: { type: 'character', flags: 0, value: '"' }
+  },
+  { type: 'punctuation', flags: 0, value: '!' }
+]
+```
+
+## The Tokenizer
 
 ```COMING SOON```
 
@@ -35,79 +63,77 @@ npm i @sudo-nymd/text-parser
 
 # Grammer
 
-## Document
-
-## Lines
-
+The grammer of the parser is simple, and is outlined below. 
 
 ## Line
 
-A single line of text.
+A single line of text composed of one or more ```Literals```.
 
     : Literals
 
 ## Literals
 
-A collection of one or more ```Words```, ```Phrases```, ```Characters```, or ```WhiteSpace```.
+A collection of one or more ```Word```, ```Phrase```, ```Character```, ```Punctuation```, ```WhiteSpace```, or ```Plugin```.
 
-    : (Word | Phrase | Character | Whitespace | Plugin) +
+    : (Word | Phrase | Character | Puncuation | Whitespace | Plugin) +
+
+**Examples:**
+```
+The quick, [brown fox] jumped over the "lazy dog", and the cow jumped over the {moon}!
+```
+
+The precending ```Literal``` consistes of
+3 ```Phrases``` ([brown fox], "lazy dog", and {moon}),
+3 ```Punctuation``` (2 commas and 1 exclamation point),
+11 ```Words```, and
+13 ```Whitespaces```.
+
 
 ## Phrase
 
-A collection of Words, Characters, or Whitespace encoded by a single ```PhraseCharacter```.
+A collection of ```Words```, ```Characters```, or ```Whitespace``` enclosed by a ```StartChar``` and a ```StopChar```.
+
+    : StartChar
+    : (Word | Character | Whitespace) +
+    : EndChar
 
 **Examples:**
-
-* "The snow is falling"
-* [Build Completed]
-* {Start}
-* 'Mission Success'
-
----
-```Phrase```
-
-    : PhraseOpen (PhraseCharacter) 1
-    : (Word | Character | Whitespace) +
-    : PhraseClose (PhraseCharacter) 1
+```
+"The snow is falling"
+[Build Completed]
+{Start}
+'Mission Success'
+```
 
 ### PhraseCharacter
 
-A special character that signifies the start and end boundaries of a ```Phrase```.
-
-    : Brackets {} /^{[^{]*}/
-    : Braces [] /^\[[^\[]*\]/
-    : SingleQuotes '' /^'[^']*'/
-    : DoubleQuotes "" /^"[^"]*"/
-    : Parenthesis *()*: /^\([^\(]*\)/
-
-### PhraseOpen
+### StartChar
     
-One or more repeating characters that signify the start of a phrase.
+One or more repeating characters that signify the start of a ```Phrase```. Includes double quote, single quote, open brace, and open bracket.
 
-    : ({ | [ | " | ')+
+    : ( { | [ | " | ' )+
 
-### PhraseList
+### EndChar
 
-One or more Words or WhiteSpace
-    
-    : (Word | WhiteSpace | Character)+
+One or more repeating characters that signify the end of a ```Phrase```. Includes double quote, single quote, close brace, and close bracket.
 
-### PhraseClose
-
-One or more repeating characters that signify the end of a phrase.
-
-    - Should Match the character(s) in PhraseOpen.
-    : (} | ] | " | ')+
+    : ( } | ] | " | ' )+
 
 ## Word
 
 Any single word.
 
-    : [a-zA-Z0-9']+
+    : ([\w]+(?:.['-]?[\w]+)*)
 
 ## Whitespace
 
-    : [^\S\r\n]+
+Any whitespace 
 
-## NewLine
-    : [\r\n]+
+    : [\s]+
+
+## Character
+
+Any character that is not alpha-numeric, whitespace, or a phrase start or stop character.
+
+    : [^a-zA-Z0-9{}\\[\\]"']
+

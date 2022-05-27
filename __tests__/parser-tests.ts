@@ -21,7 +21,8 @@ describe(`Tests the "${ModuleName}" Module.`, function () {
         let text = `Dan's "This" 'is a test's' with {singles} [quotes]! this-is-a-hyphened-word`;
         //text = `This {is a test with brackets}!`;
         //text = `This "is a test with double quotes"!`;
-        console.log(new Parser().parse(text))
+        text = `Sudo-Nymd's "text-parser"!`
+        console.log(JSON.stringify(new Parser().parse(text), null, 4))
         done();
     })
 
