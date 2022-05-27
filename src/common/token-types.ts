@@ -62,9 +62,21 @@ export type PluginTokenSpec = TokenSpec & {
 
 export type AnyTokenSpec = TokenSpec | PluginTokenSpec
 
+export enum ParsedFlags {
+    None = 0,
+    SingleQuoted = 1 << 0,
+    DoubleQuoted = 1 << 1,
+    Quoted = SingleQuoted || DoubleQuoted,
+    Bracketed = 1 << 2,
+    Braced = 1 << 3,
+    Apostrophe = 1 << 4,
+    Hyphened = 1 << 5
+}
+
 export type ParsedToken = {
     type: ParsedTokenTypes | string;
     value: any;
+    flags: ParsedFlags;
     [key: string]: any;
 }
 

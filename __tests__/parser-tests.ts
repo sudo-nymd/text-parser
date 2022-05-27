@@ -18,7 +18,7 @@ describe(`Tests the "${ModuleName}" Module.`, function () {
     });
 
     it.only(`Manual Test`, function(done) {
-        let text = `"This" 'is a test's' with {singles} quotes!`;
+        let text = `Dan's "This" 'is a test's' with {singles} [quotes]! this-is-a-hyphened-word`;
         //text = `This {is a test with brackets}!`;
         //text = `This "is a test with double quotes"!`;
         console.log(new Parser().parse(text))
