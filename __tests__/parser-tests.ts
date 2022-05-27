@@ -19,7 +19,7 @@ describe(`Tests the "${ModuleName}" Module.`, function () {
         logger.flush(LOGENTRY);
     });
 
-    it.only(`Tests the Parser.parse() method`, function (done) {
+    it(`Tests the Parser.parse() method`, function (done) {
 
         const parser = new Parser();
 
