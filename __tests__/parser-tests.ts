@@ -1,9 +1,7 @@
 import * as logger from './lib/logger';
 import { Parser, ModuleName } from '../src/parser';
 import { Keywords } from '../src/plugins/keywords';
-import { AssertionError, expect } from 'chai';
-import { TokenTypes } from '../src/common/token-types';
-import { parse } from 'path';
+import { expect } from 'chai';
 
 // "Stateless" logging functions (avoid clashes with Mocha's hijackng of "this")
 const LOGENTRY = logger.create(ModuleName);
@@ -18,6 +16,14 @@ describe(`Tests the "${ModuleName}" Module.`, function () {
         // Flush logging buffer after every test!
         logger.flush(LOGENTRY);
     });
+
+    it.only(`Manual Test`, function(done) {
+        let text = `"This" 'is a test's' with {singles} quotes!`;
+        //text = `This {is a test with brackets}!`;
+        //text = `This "is a test with double quotes"!`;
+        console.log(new Parser().parse(text))
+        done();
+    })
 
     it(`Tests the Parser.parse() method`, function (done) {
 

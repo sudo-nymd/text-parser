@@ -39,7 +39,7 @@ TokenRegExps[TokenTypes.DoubleQuote] = `"`;
 TokenRegExps[TokenTypes.SingleQuote] = `'`;
 
 /** Match a single word */
-TokenRegExps[TokenTypes.Word] = `([\\w]+[\\w'-]*)`;
+TokenRegExps[TokenTypes.Word] = `([\\w]+(?:.['-]?[\\w]+)*)`; // `([\\w]+[\\w-']*)`;
 /** Match one or more whitespace characters */
 TokenRegExps[TokenTypes.Whitespace] = `\\s+`;
 /** Match a single character */
