@@ -10,7 +10,7 @@ export class Parser {
     private _tokenizer: Tokenizer;
     private _lookahead: Token;
 
-    constructor() {
+    public constructor() {
         /** The list of plugins to be used during parsing. */
         this._plugins = [];
 
@@ -25,7 +25,7 @@ export class Parser {
      * @returns A reference to the current Parser instance (allows
      * for function chaining).
      */
-    use(plugin: PluginTokenSpec) {
+    public use(plugin: PluginTokenSpec) {
         // If plugin passes muster, add to plugins array
         this._plugins.push(validatePlugin(plugin));
 
@@ -33,7 +33,7 @@ export class Parser {
         return this;
     }
 
-    parse(text: string) {
+    public parse(text: string) {
         if (text === null || text.trim().length == 0) throw new ReferenceError(`Text cannot be NULL or EMPTY!`);
 
         this._tokenizer.init(text, this._plugins);
@@ -42,7 +42,7 @@ export class Parser {
         return this._literals();
     }
 
-    _literals(stopLookahead = null): ParsedToken[] {
+    private _literals(stopLookahead = null): ParsedToken[] {
         const items = [this._literal()];
 
         while (this._lookahead != null && this._lookahead.type !== stopLookahead) {
@@ -51,7 +51,7 @@ export class Parser {
         return items;
     }
 
-    _literal(): ParsedToken | PhraseToken {
+    private _literal(): ParsedToken | PhraseToken {
         const type: string = this._lookahead.type;
         switch (type) {
 
@@ -75,7 +75,7 @@ export class Parser {
         }
     }
 
-    _character(): ParsedToken {
+    private _character(): ParsedToken {
         const value = this._eat(TokenTypes.Character).value;
         let type: ParsedTokenTypes;
         switch (value) {
@@ -96,7 +96,7 @@ export class Parser {
         };
     }
 
-    _phrase() {
+    private _phrase() {
 
         const reducer = (initialValue, token) => {
             return initialValue += token.value;
@@ -116,26 +116,26 @@ export class Parser {
         }
     }
 
-    _phraseItems(startChar) {
+    private _phraseItems(startChar) {
         let stopChar = Phrase.getMatchingType(startChar);        
         return this._lookahead.type !== startChar ? this._literals(stopChar) : [];
     }
 
-    _startChar(): CharacterToken {
+    private _startChar(): CharacterToken {
         return {
             type: TokenTypes.Character,
             value: this._eat(this._lookahead.type).value
         }
     }
 
-    _stopChar(): ParsedToken {
+    private _stopChar(): ParsedToken {
         return {
             type: ParsedTokenTypes.Character,
             value: this._eat(this._lookahead.type).value
         }
     }
 
-    _plugin(): ParsedToken {
+    private _plugin(): ParsedToken {
         const token = this._eat(TokenTypes.Plugin);
         return {
             type: token.pluginName,
@@ -143,7 +143,7 @@ export class Parser {
         }
     }
 
-    _whitespace(): ParsedToken {
+    private _whitespace(): ParsedToken {
         const token = this._eat(TokenTypes.Whitespace);
         return {
             type: ParsedTokenTypes.Whitespace,
@@ -151,7 +151,7 @@ export class Parser {
         }
     }
 
-    _word(): ParsedToken {
+    private _word(): ParsedToken {
         const token = this._eat(TokenTypes.Word);
         return {
             type: ParsedTokenTypes.Word,
