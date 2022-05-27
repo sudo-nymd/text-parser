@@ -30,11 +30,6 @@ export type PhraseOpenTokenTypes = TokenTypes.BraceOpen | TokenTypes.BracketOpen
 export type PhraseCloseTokenTypes = TokenTypes.BraceClose | TokenTypes.BracketClose | TokenTypes.DoubleQuote | TokenTypes.SingleQuote
 export type PhraseTokenTypes = PhraseCloseTokenTypes | PhraseOpenTokenTypes;
 
-
-export type PhraseToken = Token & {
-    type: TokenTypes.Phrase;
-}
-
 export type CharacterToken = Token & {
     type: TokenTypes.Character;
 }
@@ -66,4 +61,22 @@ export type PluginTokenSpec = TokenSpec & {
 }
 
 export type AnyTokenSpec = TokenSpec | PluginTokenSpec
+
+export type ParsedToken = {
+    type: ParsedTokenTypes | string;
+    value: any;
+    [key: string]: any;
+}
+
+export type PhraseToken = ParsedToken & {
+    type: ParsedTokenTypes.Phrase;
+}
+
+export enum ParsedTokenTypes {
+    Phrase = 'phrase',
+    Word = 'word',
+    Whitespace = 'whitespace',
+    Character = 'character',
+    Punctuation = 'punctuation',
+}
 

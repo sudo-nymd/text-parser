@@ -19,19 +19,25 @@ describe(`Tests the "${ModuleName}" Module.`, function () {
         logger.flush(LOGENTRY);
     });
 
-    it(`Tests the Parser.parse() method`, function(done) {
+    it.only(`Tests the Parser.parse() method`, function (done) {
 
         const parser = new Parser();
 
         // @ts-ignore
         expect(() => parser.parse(null), 'null text arg').to.throw(ReferenceError);
         expect(() => parser.parse(''), 'empty text arg').to.throw(ReferenceError);
-
+        parser.use(new Keywords()
+            .add('zephyr')
+            .add('sirrocco')
+            .plugin());
         const parsed = parser.parse(
-        `
+            `
         This is "in quotes".
         This is {another phrase}.
-        This is a [braced phrase]
+        This is a [braced phrase].
+        This is an exclamation!!!
+        Part 1; Part 2; Part 3;
+        The zephyr turned into a sirrocco?
         `);
         debug(parsed)
         //debug(parsed.filter((item) => item.type == TokenTypes.Phrase))
@@ -45,13 +51,13 @@ describe(`Tests the "${ModuleName}" Module.`, function () {
 
         const actual = new Parser()
             .use(
-            new Keywords()
-                .add('zephyr')
-                .add('sirrocco')
-                .plugin()
+                new Keywords()
+                    .add('zephyr')
+                    .add('sirrocco')
+                    .plugin()
             )
             .parse('the zephyr turned into a sirrocco')
-        
+
         debug(actual);
         done();
     })

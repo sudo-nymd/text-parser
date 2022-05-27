@@ -1,5 +1,5 @@
 import { Phrase } from "./common/token-specs";
-import { CharacterToken, PluginTokenSpec, TokenTypes, WhitespaceToken, WordToken } from "./common/token-types";
+import { CharacterToken, ParsedToken, ParsedTokenTypes, PluginTokenSpec, TokenTypes, WhitespaceToken, WordToken } from "./common/token-types";
 import { Token } from "./common/token-types";
 import { validatePlugin } from "./plugins/common";
 import { Tokenizer } from "./tokenizer";
@@ -42,7 +42,7 @@ export class Parser {
         return this._literals();
     }
 
-    _literals(stopLookahead = null): Token[] {
+    _literals(stopLookahead = null): ParsedToken[] {
         const items = [this._literal()];
 
         while (this._lookahead != null && this._lookahead.type !== stopLookahead) {
@@ -51,7 +51,7 @@ export class Parser {
         return items;
     }
 
-    _literal(): Token {
+    _literal(): ParsedToken | PhraseToken {
         const type: string = this._lookahead.type;
         switch (type) {
 
@@ -75,8 +75,25 @@ export class Parser {
         }
     }
 
-    _character() {
-        return this._eat(TokenTypes.Character);
+    _character(): ParsedToken {
+        const value = this._eat(TokenTypes.Character).value;
+        let type: ParsedTokenTypes;
+        switch (value) {
+            case '!':
+            case '.':
+            case ',':
+            case '?':
+                type = ParsedTokenTypes.Punctuation
+                break;
+
+            default: 
+                type = ParsedTokenTypes.Character;
+                break;
+        }
+        return {
+            type: type,
+            value: value
+        };
     }
 
     _phrase() {
@@ -91,12 +108,12 @@ export class Parser {
         const stopChar = this._stopChar()
 
         return {
-            type: TokenTypes.Phrase,
+            type: ParsedTokenTypes.Phrase,
             startChar,
             items,
             value,
             stopChar
-        } as PhraseToken
+        }
     }
 
     _phraseItems(startChar) {
@@ -111,26 +128,38 @@ export class Parser {
         }
     }
 
-    _stopChar(): CharacterToken {
+    _stopChar(): ParsedToken {
         return {
-            type: TokenTypes.Character,
+            type: ParsedTokenTypes.Character,
             value: this._eat(this._lookahead.type).value
         }
     }
 
-    _plugin() {
-        return this._eat(TokenTypes.Plugin);
+    _plugin(): ParsedToken {
+        const token = this._eat(TokenTypes.Plugin);
+        return {
+            type: token.pluginName,
+            value: token.value
+        }
     }
 
-    _whitespace() {
-        return this._eat(TokenTypes.Whitespace);
+    _whitespace(): ParsedToken {
+        const token = this._eat(TokenTypes.Whitespace);
+        return {
+            type: ParsedTokenTypes.Whitespace,
+            value: token.value
+        }
     }
 
-    _word() {
-        return this._eat(TokenTypes.Word);
+    _word(): ParsedToken {
+        const token = this._eat(TokenTypes.Word);
+        return {
+            type: ParsedTokenTypes.Word,
+            value: token.value
+        }
     }
 
-    _eat(type: TokenTypes | string) {
+    private _eat(type: TokenTypes | string) {
 
         const token = this._lookahead;
 
