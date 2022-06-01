@@ -17,7 +17,26 @@ describe(`Tests the "${ModuleName}" Module.`, function () {
         logger.flush(LOGENTRY);
     });
 
-    it.only(`Manual Test`, function(done) {
+    it.only(`Tests the notify callback`, function(done) {
+
+        let keywords = new Keywords().add(`Ain't`).plugin();
+
+        let actual = [];
+        let text = `Sudo-Nymd's "text-parser"! Ain't it cool?`
+        new Parser().use(keywords).parse(text, function(token) {
+            actual.push(token);
+        });
+
+        const expected = new Parser().use(keywords).parse(text);
+
+        debug({expected, actual});
+
+        expect(actual).to.deep.equal(expected);
+
+        done();
+    })
+
+    it(`Manual Test`, function(done) {
         let text = `Dan's "This" 'is a test's' with {singles} [quotes]! this-is-a-hyphened-word`;
         //text = `This {is a test with brackets}!`;
         //text = `This "is a test with double quotes"!`;

@@ -4,11 +4,13 @@ import { Token } from "./common/token-types";
 import { validatePlugin } from "./plugins/common";
 import { Tokenizer } from "./tokenizer";
 
+export type TokenParsedCallback = (token: ParsedToken) => void;
 export class Parser {
 
     private _plugins: PluginTokenSpec[];
     private _tokenizer: Tokenizer;
     private _lookahead: Token;
+    private _notifyTokenParsedCallback: TokenParsedCallback;
 
     public constructor() {
         /** The list of plugins to be used during parsing. */
@@ -33,25 +35,26 @@ export class Parser {
         return this;
     }
 
-    public parse(text: string) {
+    public parse(text: string, callback?: TokenParsedCallback) {
         if (text === null || text.trim().length == 0) throw new ReferenceError(`Text cannot be NULL or EMPTY!`);
 
         this._tokenizer.init(text, this._plugins);
         this._lookahead = this._tokenizer.getNextToken();
+        this._notifyTokenParsedCallback = callback;
 
         return this._literals();
     }
 
-    private _literals(stopLookahead = null): ParsedToken[] {
-        const items = [this._literal()];
+    private _literals(stopLookahead = null, notify = true): ParsedToken[] {
+        const items = [this._literal(notify)];
 
         while (this._lookahead != null && this._lookahead.type !== stopLookahead) {
-            items.push(this._literal());
+            items.push(this._literal(notify));
         }
         return items as ParsedToken[];
     }
 
-    private _literal(): ParsedToken | PhraseToken {
+    private _literal(notify = true): ParsedToken | PhraseToken {
         const type: string = this._lookahead.type;
         switch (type) {
 
@@ -71,7 +74,7 @@ export class Parser {
                 return this._whitespace();
 
             case TokenTypes.Word:
-                return this._word();
+                return this._word(notify);
         }
     }
 
@@ -86,15 +89,17 @@ export class Parser {
                 type = ParsedTokenTypes.Punctuation
                 break;
 
-            default: 
+            default:
                 type = ParsedTokenTypes.Character;
                 break;
         }
-        return {
+        const token = {
             type: type,
             flags: ParsedFlags.None,
             value: value
         };
+
+        return this._notifyTokenParsed(token);
     }
 
     private _phrase() {
@@ -110,12 +115,12 @@ export class Parser {
         let flags = ParsedFlags.None;
 
         if (startChar.value === '"') {
-            flags |= ParsedFlags.Quoted; 
-            flags |= ParsedFlags.DoubleQuoted; 
+            flags |= ParsedFlags.Quoted;
+            flags |= ParsedFlags.DoubleQuoted;
         }
 
-        if (startChar.value === "'") { 
-            flags |= ParsedFlags.Quoted; 
+        if (startChar.value === "'") {
+            flags |= ParsedFlags.Quoted;
             flags |= ParsedFlags.SingleQuoted;
         }
 
@@ -127,7 +132,7 @@ export class Parser {
             flags |= ParsedFlags.Braced;
         }
 
-        return {
+        const token = {
             type: ParsedTokenTypes.Phrase,
             flags,
             startChar,
@@ -135,13 +140,29 @@ export class Parser {
             value,
             stopChar
         }
+
+        return this._notifyTokenParsed(token);
     }
 
+    /**
+     * Creates a list of parsed tokens for a Phrase.
+     * @param startChar The designated Phrase's START character.
+     * @returns The list of tokens.
+     */
     private _phraseItems(startChar) {
-        let stopChar = Phrase.getMatchingType(startChar);        
-        return this._lookahead.type !== startChar ? this._literals(stopChar) : [];
+        // Get the matching Phrase stop character. For example, '{' matches '}', 
+        // '[' matches ']', etc.
+        let stopChar = Phrase.getMatchingType(startChar);
+
+        // Tell our literals method to NOT notify when a token is created.
+        const notify = false;
+        return this._lookahead.type !== startChar ? this._literals(stopChar, notify) : [];
     }
 
+    /**
+     * Creates a parsed token that represents a Phrase's START character.
+     * @returns The parsed token.
+     */
     private _startChar(): CharacterToken {
         return {
             type: TokenTypes.Character,
@@ -149,6 +170,10 @@ export class Parser {
         }
     }
 
+    /**
+     * Creates a parsed token that represents a Phrase's STOP character.
+     * @returns The parsed token.
+     */
     private _stopChar(): ParsedToken {
         return {
             type: ParsedTokenTypes.Character,
@@ -157,38 +182,65 @@ export class Parser {
         }
     }
 
+    /**
+     * Creates a parsed token that represents a token processed by a Plugin.
+     * @returns The parsed token.
+     */
     private _plugin(): ParsedToken {
-        const token = this._eat(TokenTypes.Plugin);
-        return {
-            type: token.pluginName,
+        const next = this._eat(TokenTypes.Plugin);
+        const token = {
+            type: next.pluginName,
             flags: ParsedFlags.None,
-            value: token.value
+            value: next.value
         }
+
+        return this._notifyTokenParsed(token);
     }
 
+    /**
+     * Creates a parsed token that represents a whitespace.
+     * @returns The parsed token.
+     */
     private _whitespace(): ParsedToken {
-        const token = this._eat(TokenTypes.Whitespace);
-        return {
+        const next = this._eat(TokenTypes.Whitespace);
+        const token = {
             type: ParsedTokenTypes.Whitespace,
             flags: ParsedFlags.None,
-            value: token.value
+            value: next.value
         }
+
+        return this._notifyTokenParsed(token);
     }
 
-    private _word(): ParsedToken {
-        const token = this._eat(TokenTypes.Word);
+    /**
+     * Creates a parsed token that represents a word.
+     * @param notify Optional parameter that indicates whether the notify callback should be called
+     * when a token is processed. Notify callback should NOT be called when the word
+     * is part of a Phrase.
+     * @returns The parsed token.
+     */
+    private _word(notify = true): ParsedToken {
+        const next = this._eat(TokenTypes.Word);
 
         let flags = ParsedFlags.None;
-        if ((token.value.indexOf(`'`) >= 0)) { flags |= ParsedFlags.Apostrophe; }
-        if ((token.value.indexOf(`-`) >= 0)) { flags |= ParsedFlags.Hyphened; }
+        if ((next.value.indexOf(`'`) >= 0)) { flags |= ParsedFlags.Apostrophe; }
+        if ((next.value.indexOf(`-`) >= 0)) { flags |= ParsedFlags.Hyphened; }
 
-        return {
+        const token = {
             type: ParsedTokenTypes.Word,
             flags: flags,
-            value: token.value
+            value: next.value
         }
+
+        return (notify) ? this._notifyTokenParsed(token) : token;
     }
 
+    /**
+     * "Consumes" the next token (which must match the specified 
+     * type) from the Tokenizer.
+     * @param type The type of token to consume.
+     * @returns The raw token from the Tokenizer.
+     */
     private _eat(type: TokenTypes | string) {
 
         const token = this._lookahead;
@@ -198,11 +250,25 @@ export class Parser {
         }
 
         if (token.type !== type) {
+            // Lookahead type does not match requested type
             throw new SyntaxError(`Unexpected token: "${token.value}", expected "${type}!"`);
         }
 
         // Advance to the next token
         this._lookahead = this._tokenizer.getNextToken();
+
+        return token;
+    }
+
+    /**
+     * Notifies the client of a parsed token by calling the registered callback.
+     * @param token The parsed token.
+     * @returns The parsed token.
+     */
+    private _notifyTokenParsed(token: ParsedToken) {
+        if (this._notifyTokenParsedCallback) {
+            this._notifyTokenParsedCallback(token);
+        }
 
         return token;
     }
