@@ -45,6 +45,19 @@ console.log(parsed);
 ]
 ```
 
+If you'd prefer the token ASAP, you can specify a ```callback``` to be notified whenever a token is parsed:
+
+``` javascript
+const { Parser } = require('@sudo-nymd/text-parser');
+
+const text = `Sudo-Nymd's "text-parser"!`
+new Parser.parse(text, (token) => {
+    // We got a token, use it!
+    console.log(token);
+});
+
+```
+
 ## The Tokenizer
 
 ```COMING SOON```
