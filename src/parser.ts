@@ -1,5 +1,5 @@
 import { Phrase } from "./common/token-specs";
-import { CharacterToken, ParsedFlags, ParsedToken, ParsedTokenTypes, PluginTokenSpec, TokenTypes, WhitespaceToken, WordToken } from "./common/token-types";
+import { CharacterToken, ParsedTokenFlags, ParsedToken, ParsedTokenTypes, PluginTokenSpec, TokenTypes, WhitespaceToken, WordToken } from "./common/token-types";
 import { Token } from "./common/token-types";
 import { validatePlugin } from "./plugins/common";
 import { Tokenizer } from "./tokenizer";
@@ -95,7 +95,7 @@ export class Parser {
         }
         const token = {
             type: type,
-            flags: ParsedFlags.None,
+            flags: ParsedTokenFlags.None,
             value: value
         };
 
@@ -112,24 +112,24 @@ export class Parser {
         const items = this._phraseItems(startChar.value);
         const value = items.reduce(reducer, '');
         const stopChar = this._stopChar();
-        let flags = ParsedFlags.None;
+        let flags = ParsedTokenFlags.None;
 
         if (startChar.value === '"') {
-            flags |= ParsedFlags.Quoted;
-            flags |= ParsedFlags.DoubleQuoted;
+            flags |= ParsedTokenFlags.Quoted;
+            flags |= ParsedTokenFlags.DoubleQuoted;
         }
 
         if (startChar.value === "'") {
-            flags |= ParsedFlags.Quoted;
-            flags |= ParsedFlags.SingleQuoted;
+            flags |= ParsedTokenFlags.Quoted;
+            flags |= ParsedTokenFlags.SingleQuoted;
         }
 
         if (startChar.value === "{") {
-            flags |= ParsedFlags.Bracketed;
+            flags |= ParsedTokenFlags.Bracketed;
         }
 
         if (startChar.value === "[") {
-            flags |= ParsedFlags.Braced;
+            flags |= ParsedTokenFlags.Braced;
         }
 
         const token = {
@@ -177,7 +177,7 @@ export class Parser {
     private _stopChar(): ParsedToken {
         return {
             type: ParsedTokenTypes.Character,
-            flags: ParsedFlags.None,
+            flags: ParsedTokenFlags.None,
             value: this._eat(this._lookahead.type).value
         }
     }
@@ -190,7 +190,7 @@ export class Parser {
         const next = this._eat(TokenTypes.Plugin);
         const token = {
             type: next.pluginName,
-            flags: ParsedFlags.None,
+            flags: ParsedTokenFlags.None,
             value: next.value
         }
 
@@ -205,7 +205,7 @@ export class Parser {
         const next = this._eat(TokenTypes.Whitespace);
         const token = {
             type: ParsedTokenTypes.Whitespace,
-            flags: ParsedFlags.None,
+            flags: ParsedTokenFlags.None,
             value: next.value
         }
 
@@ -222,9 +222,9 @@ export class Parser {
     private _word(notify = true): ParsedToken {
         const next = this._eat(TokenTypes.Word);
 
-        let flags = ParsedFlags.None;
-        if ((next.value.indexOf(`'`) >= 0)) { flags |= ParsedFlags.Apostrophe; }
-        if ((next.value.indexOf(`-`) >= 0)) { flags |= ParsedFlags.Hyphened; }
+        let flags = ParsedTokenFlags.None;
+        if ((next.value.indexOf(`'`) >= 0)) { flags |= ParsedTokenFlags.Apostrophe; }
+        if ((next.value.indexOf(`-`) >= 0)) { flags |= ParsedTokenFlags.Hyphened; }
 
         const token = {
             type: ParsedTokenTypes.Word,
