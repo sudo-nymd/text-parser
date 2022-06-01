@@ -1,6 +1,6 @@
 {
   "name": "@sudo-nymd/text-parser",
-  "version": "0.2.4",
+  "version": "0.3.0",
   "description": "A simple, yet flexible library for extracting specialized tokens out of text.",
   "main": "lib/index.js",
   "files": [
