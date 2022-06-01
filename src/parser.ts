@@ -4,7 +4,10 @@ import { Token } from "./common/token-types";
 import { validatePlugin } from "./plugins/common";
 import { Tokenizer } from "./tokenizer";
 
+export { ParsedTokenFlags, ParsedTokenTypes, ParsedToken }
+
 export type TokenParsedCallback = (token: ParsedToken) => void;
+
 export class Parser {
 
     private _plugins: PluginTokenSpec[];
