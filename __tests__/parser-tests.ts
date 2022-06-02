@@ -17,7 +17,7 @@ describe(`Tests the "${ModuleName}" Module.`, function () {
         logger.flush(LOGENTRY);
     });
 
-    it.only(`Tests the notify callback`, function(done) {
+    it(`Tests the notify callback`, function(done) {
 
         let keywords = new Keywords().add(`Ain't`).plugin();
 
@@ -41,6 +41,7 @@ describe(`Tests the "${ModuleName}" Module.`, function () {
         //text = `This {is a test with brackets}!`;
         //text = `This "is a test with double quotes"!`;
         text = `Sudo-Nymd's "text-parser"!`
+        text = `The quick, [brown] fox jumped over the 'lazy dog', and the {cow} jumped over the moon! Enough said.`
         console.log(JSON.stringify(new Parser().parse(text), null, 4))
         done();
     })
