@@ -1,0 +1,55 @@
+{
+  "name": "TEST_NAME",
+  "skip": false,
+  "text": "Sudo-Nym's [text-parser] is pretty cool!",
+  "tests": [
+    {
+      "type": "word",
+      "value": "Sudo-Nym's"
+    },
+    {
+      "type": "whitespace",
+      "value": " "
+    },
+    {
+      "type": "[",
+      "value": "["
+    },
+    {
+      "type": "word",
+      "value": "text-parser"
+    },
+    {
+      "type": "]",
+      "value": "]"
+    },
+    {
+      "type": "whitespace",
+      "value": " "
+    },
+    {
+      "type": "word",
+      "value": "is"
+    },
+    {
+      "type": "whitespace",
+      "value": " "
+    },
+    {
+      "type": "word",
+      "value": "pretty"
+    },
+    {
+      "type": "whitespace",
+      "value": " "
+    },
+    {
+      "type": "word",
+      "value": "cool"
+    },
+    {
+      "type": "character",
+      "value": "!"
+    }
+  ]
+}

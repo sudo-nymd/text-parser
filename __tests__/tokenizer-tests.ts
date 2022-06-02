@@ -102,6 +102,23 @@ describe(`Tests the "${ModuleName}" Module.`, function () {
         done();
     });
 
+    it(`Manual Test`, function(done) {
+
+        const actual = []
+        let text = `'The quick' [brown] fox jumped over the 'lazy dog', and the {cow} jumped over the moon! Enough said.`;
+        text = `This is 'single quoted' phrase's.`
+        const tokenizer = new Tokenizer();
+        tokenizer.init(text);
+        while(tokenizer.hasMoreTokens()) {
+            const token = tokenizer.getNextToken();
+            actual.push(token)
+        }
+
+        debug({ actual });
+
+        done();
+    })
+
     it.skip(`Generates Tokenizer Test Data.`, function (done) {
         const expected = []
 
